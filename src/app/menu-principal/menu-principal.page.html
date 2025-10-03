@@ -1,0 +1,53 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+  </ion-toolbar>
+  <ion-title>Despensa Smart</ion-title>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="centered-container">
+   
+    <!-- Panel vacío para futuros datos -->
+    <div class="data-panel">
+      <div class="panel-content">
+        <ion-icon name="stats-chart-outline" class="panel-icon"></ion-icon>
+        <h3>Panel de Información</h3>
+        <p>Aquí se mostrarán los datos de tu despensa</p>
+        <p class="placeholder-text">(Contenido pendiente)</p>
+      </div>
+    </div>
+
+    <!-- Botones de navegación EN HORIZONTAL -->
+    <div class="buttons-container">
+      <ion-button class="nav-button" color="primary" (click)="goToDespensa()">
+        <div class="button-content">
+          <ion-icon name="basket-outline" class="button-icon"></ion-icon>
+          <span class="button-text">Despensa</span>
+        </div>
+      </ion-button>
+
+      <ion-button class="nav-button" color="secondary" (click)="goToRecetas()">
+        <div class="button-content">
+          <ion-icon name="restaurant-outline" class="button-icon"></ion-icon>
+          <span class="button-text">Recetas</span>
+        </div>
+      </ion-button>
+
+      <ion-button class="nav-button" color="medium" (click)="goToConfiguracion()">
+        <div class="button-content">
+          <ion-icon name="settings-outline" class="button-icon"></ion-icon>
+          <span class="button-text">Configuración</span>
+        </div>
+      </ion-button>
+    </div>
+
+    <!-- Botón adicional para volver a Home -->
+    <ion-button class="nav-button" color="tertiary" (click)="goToHome()">
+      <div class="button-content">
+        <ion-icon name="home-outline" class="button-icon"></ion-icon>
+        <span class="button-text">Volver a Home</span>
+      </div>
+    </ion-button>
+    
+  </div>
+</ion-content>

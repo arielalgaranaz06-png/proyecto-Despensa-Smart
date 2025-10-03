@@ -1,12 +1,34 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
+import { 
+  IonContent,
+  IonItem, 
+  IonLabel, 
+  IonInput, 
+  IonButton,
+  IonImg 
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent],
+  standalone: true,
+  imports: [
+    IonContent,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonImg
+  ]
 })
 export class HomePage {
-  constructor() {}
+
+  constructor(private router: Router) {}
+
+  goToMainMenu() {
+
+    this.router.navigate(['/menu-principal']);
+  }
 }

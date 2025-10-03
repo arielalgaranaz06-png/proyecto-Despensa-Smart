@@ -1,0 +1,122 @@
+ion-header {
+  ion-toolbar {
+    --background: #ffffff;
+    --color: #000000;
+    --border-width: 0 0 1px 0;
+    --border-color: #e0e0e0;
+  }
+}
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px); /* Resta la altura del header */
+  gap: 60px;
+  padding: 20px 0;
+}
+
+.data-panel {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 40px 30px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  color: white;
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+
+  .panel-content {
+    .panel-icon {
+      font-size: 52px;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+
+    h3 {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0 0 12px 0;
+    }
+
+    p {
+      margin: 6px 0;
+      opacity: 0.9;
+      font-size: 15px;
+    }
+
+    .placeholder-text {
+      font-style: italic;
+      opacity: 0.7;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+  }
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 500px;
+
+  .nav-button {
+    --border-radius: 16px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    flex: 1;
+    height: 95px;
+    margin: 0;
+
+    .button-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+
+      .button-icon {
+        font-size: 30px;
+      }
+
+      .button-text {
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .centered-container {
+    gap: 50px;
+    min-height: calc(100vh - 70px);
+  }
+  
+  .buttons-container {
+    gap: 10px;
+    
+    .nav-button {
+      height: 85px;
+      
+      .button-content {
+        .button-icon {
+          font-size: 24px;
+        }
+        
+        .button-text {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+.nav-button:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}

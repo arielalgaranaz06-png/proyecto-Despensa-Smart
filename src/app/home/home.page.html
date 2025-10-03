@@ -1,20 +1,41 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="login-container">
+    <!-- Logo centrado -->
+    <div class="logo-container">
+      <ion-img 
+        src="assets/icon/icon.png" 
+        alt="Logo Despensa Smart"
+        class="logo">
+      </ion-img>
+      <h1 class="app-title">Despensa Smart</h1>
+      <p class="app-subtitle">Gestiona tu despensa inteligentemente</p>
+    </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <div class="form-container">
+      <ion-item class="custom-item">
+        <ion-label position="stacked">Usuario</ion-label>
+        <ion-input 
+          type="text" 
+          placeholder="Ingresa tu usuario"
+          class="custom-input">
+        </ion-input>
+      </ion-item>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+      <ion-item class="custom-item">
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input 
+          type="password" 
+          placeholder="Ingresa tu contraseña"
+          class="custom-input">
+        </ion-input>
+      </ion-item>
+
+      <ion-button 
+        expand="block" 
+        class="login-button"
+        (click)="goToMainMenu()">
+        Iniciar Sesión
+      </ion-button>
+    </div>
   </div>
 </ion-content>
