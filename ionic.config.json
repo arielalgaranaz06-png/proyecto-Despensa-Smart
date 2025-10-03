@@ -1,0 +1,7 @@
+{
+  "name": "despensaSmart",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
