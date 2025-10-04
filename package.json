@@ -9,7 +9,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "android:live": "powershell -NoProfile -Command \"cd android; if (Test-Path .\\gradlew.bat) { .\\gradlew.bat uninstallDebug } else { ./gradlew uninstallDebug }; cd ..; ionic cap run android -l --external\""
   },
   "private": true,
   "dependencies": {
