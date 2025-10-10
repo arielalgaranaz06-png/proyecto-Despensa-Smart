@@ -15,9 +15,10 @@
       <ion-item class="custom-item">
         <ion-label position="stacked">Usuario</ion-label>
         <ion-input 
-          type="text" 
+          type="email" 
           placeholder="Ingresa tu usuario"
-          class="custom-input">
+          class="custom-input"
+          [(ngModel)]="email">
         </ion-input>
       </ion-item>
 
@@ -26,7 +27,8 @@
         <ion-input 
           type="password" 
           placeholder="Ingresa tu contraseña"
-          class="custom-input">
+          class="custom-input"
+          [(ngModel)]="password">
         </ion-input>
       </ion-item>
 
@@ -36,6 +38,8 @@
         (click)="goToMainMenu()">
         Iniciar Sesión
       </ion-button>
+
+      <ion-button expand="block" color="tertiary" (click)="register()">Registrarse</ion-button>
     </div>
   </div>
 </ion-content>

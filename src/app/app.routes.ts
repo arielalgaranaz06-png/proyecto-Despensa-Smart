@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -12,7 +13,8 @@ export const routes: Routes = [
   },
   {
     path: 'menu-principal',
-    loadComponent: () => import('./menu-principal/menu-principal.page').then( m => m.MenuPrincipalPage)
+    loadComponent: () => import('./menu-principal/menu-principal.page').then( m => m.MenuPrincipalPage),
+    canActivate: [authGuard]
   },
   {
     path: 'despensa',

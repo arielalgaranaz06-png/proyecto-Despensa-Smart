@@ -8,6 +8,9 @@ import {
   IonButton,
   IonImg 
 } from '@ionic/angular/standalone';
+import { FormsModule } from '@angular/forms';
+import { Firebase } from '../services/firebase';
+
 
 @Component({
   selector: 'app-home',
@@ -21,14 +24,40 @@ import {
     IonInput,
     IonButton,
     IonImg
+    ,FormsModule
   ]
 })
 export class HomePage {
+  email = '';
+  password = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private fb: Firebase) {
+    // escuchar cambios de auth: si ya está logueado, navegar directamente
+    this.fb.onAuthState(user => {
+      if (user) this.router.navigate(['/menu-principal']);
+    });
+  }
 
-  goToMainMenu() {
+  async goToMainMenu() {
+    try {
+      const user = await this.fb.signIn(this.email, this.password);
+      // guardar usuario en Firestore
+      await this.fb.saveUserToFirestore(user);
+      this.router.navigate(['/menu-principal']);
+    } catch (e) {
+      console.error('Error iniciando sesión', e);
+      // Aquí podrías mostrar un toast o mensaje de error
+    }
+  }
 
-    this.router.navigate(['/menu-principal']);
+  // método de registro (opcional)
+  async register() {
+    try {
+      const user = await this.fb.signUp(this.email, this.password);
+      await this.fb.saveUserToFirestore(user);
+      this.router.navigate(['/menu-principal']);
+    } catch (e) {
+      console.error('Error registrando', e);
+    }
   }
 }
