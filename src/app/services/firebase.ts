@@ -11,7 +11,7 @@ export class Firebase {
   private firestore: Firestore;
 
   constructor() {
-    //default Firestore instance from the Firebase JS SDK
+    //sdk
 
     this.firestore = getFirestore() as Firestore;
     this.auth = getAuth();
@@ -31,7 +31,7 @@ export class Firebase {
     });
   }
 
-  // obtiene documentos de una coleccion (vista?)
+  // obtiene documentos de una coleccion (vista)
   getDocument<T = any>(path: string, id: string): Observable<T | undefined> {
     const docRef = doc(this.firestore, `${path}/${id}`);
     return new Observable<T | undefined>(subscriber => {
@@ -92,7 +92,7 @@ export class Firebase {
     await this.setDocument('users', user.uid, data);
   }
 
-  // Debug helper: call Identity Toolkit REST API directly (helps detect proxy/service-worker issues)
+  // Debug 
   async signInWithRest(email: string, password: string) {
     const apiKey = environment.firebaseConfig.apiKey;
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
@@ -126,4 +126,4 @@ export class Firebase {
     await deleteDoc(docRef);
   }
 }
-//
+

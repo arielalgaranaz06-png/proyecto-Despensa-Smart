@@ -18,3 +18,4 @@ export const authGuard: CanActivateFn = () => {
     });
   });
 };
+//verifica que el usuario este logeado 

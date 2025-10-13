@@ -9,7 +9,8 @@ describe('Firebase', () => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(Firebase);
   });
-
+  
+//debug
   it('should be created', () => {
     expect(service).toBeTruthy();
   });

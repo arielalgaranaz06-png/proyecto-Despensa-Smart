@@ -32,7 +32,7 @@ export class HomePage {
   password = '';
 
   constructor(private router: Router, private fb: Firebase) {
-    // escuchar cambios de auth: si ya está logueado, navegar directamente
+    // escuchar cambios de auth. si ya está logueado, entra directo
     this.fb.onAuthState(user => {
       if (user) this.router.navigate(['/menu-principal']);
     });
@@ -46,11 +46,11 @@ export class HomePage {
       this.router.navigate(['/menu-principal']);
     } catch (e) {
       console.error('Error iniciando sesión', e);
-      // Aquí podrías mostrar un toast o mensaje de error
+      
     }
   }
 
-  // método de registro (opcional)
+  // met registro 
   async register() {
     try {
       const user = await this.fb.signUp(this.email, this.password);
