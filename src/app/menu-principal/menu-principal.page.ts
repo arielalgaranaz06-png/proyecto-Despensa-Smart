@@ -32,7 +32,7 @@ export class MenuPrincipalPage {
   }
 
   goToDespensa() {
-    console.log('Navegando a Despensa');
+    this.router.navigate(['/despensa']);
   }
 
   goToRecetas() {

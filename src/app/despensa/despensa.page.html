@@ -10,4 +10,47 @@
       <ion-title size="large">despensa</ion-title>
     </ion-toolbar>
   </ion-header>
+  <div class="container">
+    <div class="toolbar-row">
+      <ion-button color="primary" (click)="startAdd()">Agregar</ion-button>
+      <ion-button color="medium" (click)="loadItems()">Refrescar</ion-button>
+      <ion-button color="success" (click)="uploadAll()">Subir</ion-button>
+    </div>
+
+    <div *ngIf="items.length === 0" class="empty">No hay elementos en la despensa.</div>
+
+    <ion-list>
+      <ion-item *ngFor="let it of items; let i = index">
+        <ion-label>
+          <h3>{{ it.name }}</h3>
+          <p>Cantidad: {{ it.qty }} • Notas: {{ it.note || '-' }}</p>
+        </ion-label>
+        <ion-button slot="end" color="tertiary" fill="clear" (click)="startEdit(i)">Editar</ion-button>
+        <ion-button slot="end" color="danger" fill="clear" (click)="deleteItem(i)">Eliminar</ion-button>
+      </ion-item>
+    </ion-list>
+
+    <div class="modal" *ngIf="editing">
+      <div class="modal-content">
+        <h3>{{ editIndex === -1 ? 'Agregar elemento' : 'Editar elemento' }}</h3>
+        <ion-item>
+          <ion-label position="stacked">Nombre</ion-label>
+          <ion-input [(ngModel)]="editModel.name" placeholder="Ej. Arroz"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Cantidad</ion-label>
+          <ion-input type="number" [(ngModel)]="editModel.qty" placeholder="1"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Unidad de medida</ion-label>
+          <ion-input [(ngModel)]="editModel.note" placeholder="Ej. Litros"></ion-input>
+        </ion-item>
+
+        <div class="modal-actions">
+          <ion-button (click)="cancelEdit()">Cancelar</ion-button>
+          <ion-button color="primary" (click)="saveEdit()">Guardar</ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-content>

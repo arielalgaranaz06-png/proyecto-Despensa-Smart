@@ -92,16 +92,16 @@ export class Firebase {
     await this.setDocument('users', user.uid, data);
   }
 
-  // Debug 
-  async signInWithRest(email: string, password: string) {
-    const apiKey = environment.firebaseConfig.apiKey;
-    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
-    const body = { email, password, returnSecureToken: true };
-    const res = await fetch(url, {
+  // API REST 
+  async signInWithRest(email: string, password: string) {//agarra el email y la contraseña
+    const apiKey = environment.firebaseConfig.apiKey; //agarrea la api de el envieroment 
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`; //la url agarra la apikey
+    const body = { email, password, returnSecureToken: true }; //envia esto a firebase
+    const res = await fetch(url, { 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
-    });
+    });//aqui se espera a una repsuesta de la base
     const text = await res.text();
     let json: any;
     try { json = JSON.parse(text); } catch { json = text; }
