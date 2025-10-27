@@ -1,3 +1,12 @@
 export const environment = {
-  production: true
+  production: true,
+  // Reemplaza por la configuración de Firebase de producción cuando la tengas.
+  firebase: {
+      apiKey:"AIzaSyCDnA1MD7U_-BDhUkZOe3ywy4nVHzn_rII",
+  authDomain: "proyecto-despensa-smart.firebaseapp.com",      //no ocuapaba poner todo esto 
+  projectId: "proyecto-despensa-smart",
+  storageBucket: "proyecto-despensa-smart.firebasestorage.app",
+  messagingSenderId: "132160270331",
+  appId: "1:132160270331:web:64dcc40f1d3b352e85a55e"
+  }
 };
