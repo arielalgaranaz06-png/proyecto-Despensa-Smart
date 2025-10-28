@@ -144,7 +144,12 @@ export class CrudPage implements OnInit {
 
     this.cargando.set(true);
     const cambios = this.productoForm.value as Producto;
-    this.api.put(sel.id!, { ...sel, ...cambios }).subscribe({
+    // Envia los datos para actualizar
+    const cambiosTyped: Partial<Producto> = {
+      nombre: String(cambios.nombre),
+      precio: Number(cambios.precio)
+    };
+  this.api.update(sel.id!, cambiosTyped).subscribe({
       next: async (actualizado) => {
         // refrescamos lista local
         const nueva = this.productos().map(p => p.id === actualizado.id ? actualizado : p);

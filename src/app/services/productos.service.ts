@@ -65,8 +65,11 @@ export class ProductosService {
 
   //editado .http.put<any>
   put(id: string, full: Producto): Observable<Producto> {
-    const url = `${this.base}/${this.collection}/${id}`; //no habia el url 
-    return this.http.put<any>(id, full);
+    const url = `${this.base}/${this.collection}/${id}`;
+    const body = FirestoreMapear.productoToFirestore(full);
+    return this.http.patch<any>(url, body, { headers: this.headers() }).pipe(
+      map(doc => FirestoreMapear.productoFromFirestore(doc))
+    );
   }
 
   delete(id: string): Observable<void> {
