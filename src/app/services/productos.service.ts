@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ProductosService {
   private base = `https://firestore.googleapis.com/v1/projects/${environment.firebase.projectId}/databases/(default)/documents`;
-  private collection = 'productos';
+  private collection = 'Productos'; //Nombre de la coleccion a la que se suben los productos 
 
   constructor(
     private http: HttpClient,

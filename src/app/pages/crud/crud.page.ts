@@ -42,13 +42,18 @@ export class CrudPage implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
-
-    this.productoForm = this.fb.group({
+    //Datos que se mandan a Firebase
+    this.productoForm = this.fb.group({  
       nombre: ['', [Validators.required, Validators.minLength(2)]],
       precio: [0, [Validators.required, Validators.min(0)]],
+      cantidad: [0, [Validators.min(0)]],
+      fechaCaducidad: [''],
+      nombreProducto: [''],
+      unidadMedida: [''],
+      fechaCreacion: [''],
     });
 
-    // si ya tenías token en memoria dentro del servicio, puedes detectar aquí
+    // Token en memoria 
     const token = this.auth.getToken?.() as string | undefined;
     if (token) {
       this.idToken.set(token);
@@ -85,7 +90,7 @@ export class CrudPage implements OnInit {
     this.logueado.set(false);
     this.productos.set([]);
     this.seleccionado.set(null);
-    this.productoForm.reset({ nombre: '', precio: 0 });
+    this.productoForm.reset({ nombre: '', precio: 0, cantidad: 0, fechaCaducidad: '', nombreProducto: '', precioTexto: '', unidadMedida: '', fechaCreacion: '' });
     await this.presentToast('Sesión cerrada');
   }
 
@@ -113,7 +118,7 @@ export class CrudPage implements OnInit {
     const p = this.productoForm.value as Producto;
     this.api.create(p).subscribe({
       next: async (nuevo) => {
-        this.productoForm.reset({ nombre: '', precio: 0 });
+        this.productoForm.reset({ nombre: '', precio: 0, cantidad: 0, fechaCaducidad: '', nombreProducto: '', precioTexto: '', unidadMedida: '', fechaCreacion: '' });
         this.productos.set([nuevo, ...this.productos()]);
         await this.presentToast('Producto creado');
         this.cargando.set(false);
@@ -130,6 +135,12 @@ export class CrudPage implements OnInit {
     this.productoForm.patchValue({
       nombre: item.nombre,
       precio: item.precio
+      , cantidad: item.cantidad ?? 0,
+      fechaCaducidad: item.fechaCaducidad ?? '',
+      nombreProducto: item.nombreProducto ?? '',
+      precioTexto: item.precioTexto ?? '',
+      unidadMedida: item.unidadMedida ?? '',
+      fechaCreacion: item.fechaCreacion ?? ''
     });
   }
 
@@ -144,10 +155,16 @@ export class CrudPage implements OnInit {
 
     this.cargando.set(true);
     const cambios = this.productoForm.value as Producto;
-    // Envia los datos para actualizar
+    // Envia los datos para actualizar: normalizar tipos
     const cambiosTyped: Partial<Producto> = {
       nombre: String(cambios.nombre),
-      precio: Number(cambios.precio)
+      precio: Number(cambios.precio),
+      cantidad: Number(cambios.cantidad),
+      fechaCaducidad: cambios.fechaCaducidad ? (cambios.fechaCaducidad instanceof Date ? cambios.fechaCaducidad.toISOString() : String(cambios.fechaCaducidad)) : undefined,
+      nombreProducto: cambios.nombreProducto ? String(cambios.nombreProducto) : undefined,
+      precioTexto: cambios.precioTexto !== undefined ? String(cambios.precioTexto) : undefined,
+      unidadMedida: cambios.unidadMedida ? String(cambios.unidadMedida) : undefined,
+      fechaCreacion: cambios.fechaCreacion ? String(cambios.fechaCreacion) : undefined
     };
   this.api.update(sel.id!, cambiosTyped).subscribe({
       next: async (actualizado) => {
@@ -155,7 +172,7 @@ export class CrudPage implements OnInit {
         const nueva = this.productos().map(p => p.id === actualizado.id ? actualizado : p);
         this.productos.set(nueva);
         this.seleccionado.set(null);
-        this.productoForm.reset({ nombre: '', precio: 0 });
+  this.productoForm.reset({ nombre: '', precio: 0, cantidad: 0, fechaCaducidad: '', nombreProducto: '', precioTexto: '', unidadMedida: '', fechaCreacion: '' });
         await this.presentToast('Producto actualizado');
         this.cargando.set(false);
       },
@@ -180,7 +197,7 @@ export class CrudPage implements OnInit {
         if (!item) {
           // si venía del modo edición
           this.seleccionado.set(null);
-          this.productoForm.reset({ nombre: '', precio: 0 });
+          this.productoForm.reset({ nombre: '', precio: 0, cantidad: 0, fechaCaducidad: '', nombreProducto: '', precioTexto: '', unidadMedida: '', fechaCreacion: '' });
         }
         await this.presentToast('Producto borrado');
         this.cargando.set(false);
@@ -194,7 +211,7 @@ export class CrudPage implements OnInit {
 
   cancelarEdicion() {
     this.seleccionado.set(null);
-    this.productoForm.reset({ nombre: '', precio: 0 });
+    this.productoForm.reset({ nombre: '', precio: 0, cantidad: 0, fechaCaducidad: '', nombreProducto: '', precioTexto: '', unidadMedida: '', fechaCreacion: '' });
   }
 
   private async presentToast(message: string, color: 'primary'|'success'|'warning'|'danger'|'medium' = 'success') {

@@ -46,8 +46,8 @@
       </ion-card-header>
       <ion-card-content>
         <form [formGroup]="productoForm">
-          <ion-item>
-            <ion-label position="stacked">Nombre</ion-label>
+          <ion-item>  <!--Campos principales-->
+            <ion-label position="stacked">Nombre Producto</ion-label>
             <ion-input formControlName="nombre"></ion-input>
           </ion-item>
           <ion-note color="danger" *ngIf="productoForm.get('nombre')?.invalid && productoForm.get('nombre')?.touched">
@@ -61,6 +61,27 @@
           <ion-note color="danger" *ngIf="productoForm.get('precio')?.invalid && productoForm.get('precio')?.touched">
             Precio debe ser 0 o mayor
           </ion-note>
+
+          <!-- Campos que mandamos a firebase  -->
+          <ion-item class="mt-2">
+            <ion-label position="stacked">Cantidad</ion-label>
+            <ion-input type="number" formControlName="cantidad"></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="productoForm.get('cantidad')?.invalid && productoForm.get('cantidad')?.touched">
+            Cantidad debe ser 0 o mayor
+          </ion-note>
+
+          <ion-item class="mt-2">
+            <ion-label position="stacked">Fecha de caducidad</ion-label>
+            <ion-input type="datetime-local" formControlName="fechaCaducidad"></ion-input>
+          </ion-item>
+
+          <ion-item class="mt-2">
+            <ion-label position="stacked">Unidad de medida</ion-label>
+            <ion-input formControlName="unidadMedida"></ion-input>
+          </ion-item>
+
+    
 
           <div class="grid-btns">
             <ion-button expand="block" (click)="crear()" *ngIf="!editando()" [disabled]="cargando()">Crear</ion-button>
