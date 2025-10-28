@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "132160270331",
+    "project_id": "proyecto-despensa-smart",
+    "storage_bucket": "proyecto-despensa-smart.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132160270331:android:f6b3f4cdc41e614e85a55e",
+        "android_client_info": {
+          "package_name": "Despensa.smart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbT4ByIcXAoIlySDRCc_yxVU6IIFyd1uQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

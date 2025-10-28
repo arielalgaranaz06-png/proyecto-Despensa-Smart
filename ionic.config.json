@@ -1,0 +1,7 @@
+{
+  "name": "examen2",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
