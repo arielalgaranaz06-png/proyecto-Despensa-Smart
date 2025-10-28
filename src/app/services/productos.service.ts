@@ -25,31 +25,33 @@ export class ProductosService {
       ...(token ? { Authorization: `Bearer ${token}` } : {})
     });
   }
-
+//obtiene todos los productos
   getAll(): Observable<Producto[]> {
     const url = `${this.base}/${this.collection}`;
-    return this.http.get<any>(url, { headers: this.headers() }).pipe(  //editado .get<any> habia ?
+    return this.http.get<any>(url, { headers: this.headers() }).pipe(  
       map(resp => (resp.documents ?? []).map((d: any) => FirestoreMapear.productoFromFirestore(d)))
     );
   }
-
+//obtiene producto por su id
   getById(id: string): Observable<Producto> {
     const url = `${this.base}/${this.collection}/${id}`;
-    return this.http.get<any>(url,{ headers: this.headers() }).pipe( //editaddo .get<any> 
+    return this.http.get<any>(url,{ headers: this.headers() }).pipe( 
       map(doc => FirestoreMapear.productoFromFirestore(doc))
     );
   }
-
+//crea un nuevo producto
   create(prod: Producto): Observable<Producto> {
     const url = `${this.base}/${this.collection}`;
     const body = FirestoreMapear.productoToFirestore({
       ...prod,
       creadoEn: prod.creadoEn ?? new Date().toISOString()
     });
-    return this.http.post<any>(url,body ,{ headers: this.headers() }).pipe(  //habia un get en lugar de un post .no habia body
+    return this.http.post<any>(url,body ,{ headers: this.headers() }).pipe(  
       map(doc => FirestoreMapear.productoFromFirestore(doc))
     );
   }
+
+  //actualiza porductos
   update(id: string, partial: Partial<Producto>): Observable<Producto> {
     const url = `${this.base}/${this.collection}/${id}`;
     const body = FirestoreMapear.productoToFirestore(partial as Producto);
@@ -63,7 +65,7 @@ export class ProductosService {
     );
   }
 
-  //editado .http.put<any>
+  
   put(id: string, full: Producto): Observable<Producto> {
     const url = `${this.base}/${this.collection}/${id}`;
     const body = FirestoreMapear.productoToFirestore(full);
@@ -71,7 +73,7 @@ export class ProductosService {
       map(doc => FirestoreMapear.productoFromFirestore(doc))
     );
   }
-
+//no lo estamos usando, agregar campo de estado a futuro para funcionalidad (?)
   delete(id: string): Observable<void> {
     const url = `${this.base}/${this.collection}/${id}`;
     return this.http.delete<void>(url, { headers: this.headers() });

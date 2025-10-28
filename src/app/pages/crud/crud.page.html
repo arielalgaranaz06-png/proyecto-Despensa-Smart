@@ -41,7 +41,7 @@
   <ng-container *ngIf="logueado()">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>{{ editando() ? 'Editar producto' : 'Nuevo producto' }}</ion-card-title>
+        <ion-card-title>{{ editando() ? 'Editar producto' : 'Nuevo producto' }}</ion-card-title> <!--cambia el titulo si estamos editando o creando -->
         <ion-card-subtitle *ngIf="idToken()">Autenticado</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
@@ -59,7 +59,7 @@
             <ion-input type="number" formControlName="precio"></ion-input>
           </ion-item>
           <ion-note color="danger" *ngIf="productoForm.get('precio')?.invalid && productoForm.get('precio')?.touched">
-            Precio debe ser 0 o mayor
+            El precio debe ser mayor a 0
           </ion-note>
 
           <!-- Campos que mandamos a firebase  -->
@@ -68,7 +68,7 @@
             <ion-input type="number" formControlName="cantidad"></ion-input>
           </ion-item>
           <ion-note color="danger" *ngIf="productoForm.get('cantidad')?.invalid && productoForm.get('cantidad')?.touched">
-            Cantidad debe ser 0 o mayor
+            La cantidad debe ser mayor a 0
           </ion-note>
 
           <ion-item class="mt-2">
@@ -110,13 +110,13 @@
         </ion-item>
         <ion-item-options side="end">
           <ion-item-option color="warning" (click)="seleccionar(p)">Editar</ion-item-option>
-          <ion-item-option color="danger" (click)="borrar(p)">Borrar</ion-item-option>
+          <ion-item-option color="danger" (click)="borrar(p)">Borrar</ion-item-option> 
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
 
     <ng-template #vacio>
-      <ion-note color="medium">No hay productos aún.</ion-note>
+      <ion-note color="medium">No hay productos aún.</ion-note> <!--placeholder por si no hay nada-->
     </ng-template>
   </ng-container>
 

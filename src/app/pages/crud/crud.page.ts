@@ -45,8 +45,8 @@ export class CrudPage implements OnInit {
     //Datos que se mandan a Firebase
     this.productoForm = this.fb.group({  
       nombre: ['', [Validators.required, Validators.minLength(2)]],
-      precio: [0, [Validators.required, Validators.min(0)]],
-      cantidad: [0, [Validators.min(0)]],
+      precio: [0, [Validators.required, Validators.min(1)]],
+      cantidad: [0, [Validators.required, Validators.min(1)]],
       fechaCaducidad: [''],
       nombreProducto: [''],
       unidadMedida: [''],

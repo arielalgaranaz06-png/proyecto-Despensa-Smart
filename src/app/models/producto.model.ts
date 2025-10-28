@@ -1,5 +1,5 @@
 export interface Producto {
-  id?: string;   // Identificador generado
+  id?: string;   // Identificador generado para firebase
   nombre: string;
   precio: number;
   creadoEn?: string | number;
