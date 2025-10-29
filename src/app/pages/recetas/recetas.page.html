@@ -1,23 +1,73 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>recetas</ion-title>
+    <ion-title>Generador de Recetas</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">recetas</ion-title>
-      <ion-button 
-        expand="block"
-        class="login-button"
-        (click)="gotoMenuPrincipal()">
-        Iniciar Sesión
-      </ion-button>
-    </ion-toolbar>
-  </ion-header>
-  
-  <!-- Botón para volver al menú principal -->
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Loading spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Cargando productos...</p>
+  </div>
+
+  <!-- Productos disponibles -->
+  <div *ngIf="!isLoading">
+    <h2>Selecciona ingredientes de tu despensa</h2>
+    
+    <ion-list>
+      <ion-item *ngFor="let producto of productos">
+        <ion-checkbox 
+          [(ngModel)]="producto.selected"
+          [disabled]="producto.cantidad === 0"
+          labelPlacement="end">
+          {{ producto.nombre }} ({{ producto.cantidad }})
+        </ion-checkbox>
+      </ion-item>
+    </ion-list>
+
+    <!-- Botón para generar receta -->
+    <ion-button 
+      expand="block"
+      color="primary"
+      (click)="generarReceta()"
+      [disabled]="!hayProductosSeleccionados()"
+      style="margin: 16px 0;">
+      <ion-icon name="restaurant" slot="start"></ion-icon>
+      Generar Receta
+    </ion-button>
+
+    <!-- Box para mostrar receta generada -->
+    <ion-card *ngIf="recetaGenerada" class="ion-margin-top">
+      <ion-card-header>
+        <ion-card-title>🍽️ Receta generada</ion-card-title>
+      </ion-card-header>
+      <ion-card-content [innerHTML]="recetaGenerada"></ion-card-content>
+    </ion-card>
+
+    <!-- Mostrar payload que se enviaría a la IA (solo si se activa mostrarPayload) -->
+    <div *ngIf="mostrarPayload" style="margin-bottom:16px;">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Payload que se enviaría a la IA</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <h3>Headers (preview)</h3>
+          <pre>{{ headersPreview | json }}</pre>
+
+          <h3>Body (request)</h3>
+          <pre>{{ ultimoPayload | json }}</pre>
+
+          <div *ngIf="recetaGenerada" style="margin-top:12px;">
+            <h3>Respuesta de la IA</h3>
+            <div [innerHTML]="recetaGenerada"></div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Botón para volver -->
   <ion-button 
     expand="block"
     color="medium"
