@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-title>Mi Despensa</ion-title>
   </ion-toolbar>
-  <ion-title>Mi Despensa</ion-title>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
@@ -83,6 +83,16 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Mensaje cuando no hay productos recientes -->
+    <div class="empty-state" *ngIf="!isLoading && productosRecientes.length === 0">
+      <ion-icon name="basket-outline" class="empty-icon"></ion-icon>
+      <h3>No hay productos recientes</h3>
+      <p>Agrega algunos productos a tu despensa para verlos aquí</p>
+      <ion-button (click)="goToDespensa()" fill="solid">
+        Agregar Productos
+      </ion-button>
     </div>
 
     <!-- Menú de Navegación Moderno -->

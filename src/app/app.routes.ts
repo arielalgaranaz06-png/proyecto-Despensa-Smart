@@ -27,7 +27,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/despensa/registro/registro.page').then( m => m.RegistroPage)
   },
   {
-    path: 'editar',
+    path: 'editar/:id',
     loadComponent: () => import('./pages/despensa/editar/editar.page').then( m => m.EditarPage)
   },
   {

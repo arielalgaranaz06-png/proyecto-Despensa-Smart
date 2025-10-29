@@ -1,0 +1,83 @@
+.form-container {
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 200px; // Altura mínima para prevenir el error
+}
+
+.readonly-field {
+  opacity: 0.7;
+  
+  h3 {
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: var(--ion-color-medium);
+  }
+  
+  p {
+    font-size: 0.9em;
+    color: var(--ion-color-dark);
+    margin: 0;
+  }
+}
+
+.action-buttons {
+  margin-top: 32px;
+  
+  ion-button {
+    margin-bottom: 12px;
+  }
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  padding: 20px;
+  min-height: 200px; // Prevenir el error
+  
+  ion-spinner {
+    margin-bottom: 16px;
+    width: 48px;
+    height: 48px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    margin: 8px 0;
+  }
+}
+
+.error-container {
+  .error-icon {
+    font-size: 64px;
+    color: var(--ion-color-danger);
+    margin-bottom: 16px;
+  }
+  
+  h3 {
+    color: var(--ion-color-danger);
+    margin-bottom: 8px;
+  }
+}
+
+// Estilos específicos para prevenir el error de offsetHeight
+ion-content {
+  --overflow: auto;
+}
+
+// Asegurar que los elementos tengan dimensiones definidas
+ion-list {
+  min-height: 100px;
+}
+
+// Prevenir que los elementos estén ocultos durante la carga
+.form-container, .loading-container, .error-container {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}

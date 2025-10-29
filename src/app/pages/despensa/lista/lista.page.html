@@ -16,24 +16,21 @@
         <h1>Mi Despensa</h1>
         <p>Selecciona una categoría para ver sus productos</p>
       </div>
-      <ion-button fill="clear" (click)="refreshData()" class="refresh-button" [disabled]="isLoading">
-        <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
-      </ion-button>
     </div>
 
     <!-- Grid de Categorías -->
     <div class="categories-grid">
       <!-- Categoría "Todos" -->
       <div class="category-card all-categories" (click)="showAllProducts()">
-        <div class="category-icon">
-          <ion-icon name="apps-outline"></ion-icon>
+        <div class="category-avatar">
+          T
         </div>
         <div class="category-content">
           <h3 class="category-name">Todos los Productos</h3>
           <p class="category-count">{{getTotalProductsCount()}} productos</p>
         </div>
         <div class="category-arrow">
-          <ion-icon name="chevron-forward-outline"></ion-icon>
+          ›
         </div>
       </div>
 
@@ -41,19 +38,18 @@
       <div *ngFor="let categoria of getCategoriesWithProducts()" 
            class="category-card" 
            (click)="selectCategory(categoria)">
-        <div class="category-icon" [style.background]="getCategoryColor(categoria.id)">
-          <ion-icon [name]="getCategoryIcon(categoria.nombre)"></ion-icon>
+        <div class="category-avatar" [style.background]="getCategoryColor(categoria.id)">
+          {{getCategoryInitial(categoria.nombre)}}
         </div>
         <div class="category-content">
           <h3 class="category-name">{{categoria.nombre}}</h3>
           <p class="category-count">{{getProductsByCategory(categoria.id).length}} productos</p>
           <div *ngIf="getLowStockInCategory(categoria.id) > 0" class="low-stock-indicator">
-            <ion-icon name="warning-outline"></ion-icon>
             {{getLowStockInCategory(categoria.id)}} con stock bajo
           </div>
         </div>
         <div class="category-arrow">
-          <ion-icon name="chevron-forward-outline"></ion-icon>
+          ›
         </div>
       </div>
     </div>
@@ -61,13 +57,12 @@
     <!-- Estado vacío -->
     <div *ngIf="!hasProducts()" class="empty-state">
       <div class="empty-illustration">
-        <ion-icon name="cart-outline" class="empty-icon"></ion-icon>
+        🛒
       </div>
       <div class="empty-content">
         <h2>Tu despensa está vacía</h2>
         <p>Comienza agregando algunos productos para mantener tu stock organizado</p>
         <ion-button fill="solid" color="primary" (click)="goToRegistro()" class="empty-button">
-          <ion-icon slot="start" name="add-outline"></ion-icon>
           Agregar Primer Producto
         </ion-button>
       </div>
@@ -80,13 +75,12 @@
     <!-- Header de la categoría -->
     <div class="category-header-section">
       <ion-button fill="clear" (click)="goBackToCategories()" class="back-button">
-        <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
-        Volver
+        ← Volver
       </ion-button>
       
       <div class="category-title-section">
-        <div class="category-icon-large" [style.background]="getCategoryColor(getSelectedCategoryId())">
-          <ion-icon [name]="getCategoryIcon(getSelectedCategoryName())"></ion-icon>
+        <div class="category-avatar-large" [style.background]="getCategoryColor(getSelectedCategoryId())">
+          {{getCategoryInitial(getSelectedCategoryName())}}
         </div>
         <div class="category-info">
           <h1 class="category-title">{{getCategoryTitle()}}</h1>
@@ -130,18 +124,15 @@
           <div class="product-details">
             <div class="detail-row">
               <div class="detail-item">
-                <ion-icon name="pricetag-outline" class="detail-icon"></ion-icon>
                 <span class="detail-text">{{getProductQuantity(producto)}} unidades</span>
               </div>
               
               <div *ngIf="producto.precio && producto.precio > 0" class="detail-item">
-                <ion-icon name="cash-outline" class="detail-icon"></ion-icon>
                 <span class="detail-text">${{producto.precio}}</span>
               </div>
             </div>
             
             <div *ngIf="getExpiryDate(producto)" class="detail-item expiry">
-              <ion-icon name="calendar-outline" class="detail-icon"></ion-icon>
               <span class="detail-text">Vence: {{getExpiryDate(producto) | date:'dd/MM/yy'}}</span>
             </div>
           </div>
@@ -150,12 +141,12 @@
         <div class="product-actions">
           <ion-button fill="clear" size="small" class="action-btn edit" 
                       (click)="editarProducto(producto)">
-            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+            Editar
           </ion-button>
           
           <ion-button fill="clear" size="small" color="danger" class="action-btn delete" 
                       (click)="confirmarEliminacion(producto)">
-            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            Eliminar
           </ion-button>
         </div>
       </div>
@@ -164,37 +155,33 @@
     <!-- Estado vacío en categoría -->
     <div *ngIf="getProductsToShow().length === 0" class="empty-category-state">
       <div class="empty-illustration">
-        <ion-icon name="file-tray-outline" class="empty-icon"></ion-icon>
+        📦
       </div>
       <div class="empty-content">
         <h2>No hay productos en esta categoría</h2>
         <p>Agrega algunos productos para comenzar</p>
         <ion-button fill="solid" color="primary" (click)="goToRegistro()" class="empty-button">
-          <ion-icon slot="start" name="add-outline"></ion-icon>
           Agregar Producto
         </ion-button>
       </div>
     </div>
   </div>
 
-  <!-- Botones flotantes -->
-  <div *ngIf="!isLoading && hasProducts()" class="floating-buttons">
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button color="primary">
-        <ion-icon name="add"></ion-icon>
+  <!-- Botones flotantes SOLO ICONOS - DISEÑO MODERNO -->
+  <ion-fab *ngIf="!isLoading && hasProducts()" vertical="bottom" horizontal="end" slot="fixed" class="modern-fab">
+    <ion-fab-button class="fab-main">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top" class="fab-list-modern">
+      <ion-fab-button (click)="goToRegistro()" class="fab-item add">
+        <ion-icon name="add-circle"></ion-icon>
       </ion-fab-button>
-      <ion-fab-list side="top">
-        <ion-fab-button (click)="goToRegistro()" class="fab-button">
-          <ion-icon name="add-outline"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button (click)="gotoMenuPrincipal()" class="fab-button">
-          <ion-icon name="home-outline"></ion-icon>
-        </ion-fab-button>
-        <!-- Botón extra para volver cuando estamos en una categoría -->
-        <ion-fab-button *ngIf="selectedCategory" (click)="goBackToCategories()" class="fab-button">
-          <ion-icon name="list-outline"></ion-icon>
-        </ion-fab-button>
-      </ion-fab-list>
-    </ion-fab>
-  </div>
+      <ion-fab-button (click)="gotoMenuPrincipal()" class="fab-item home">
+        <ion-icon name="home"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="selectedCategory" (click)="goBackToCategories()" class="fab-item categories">
+        <ion-icon name="grid"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>

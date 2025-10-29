@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
-  IonContent, IonButton, IonIcon, IonFab, IonFabButton, IonFabList,
-  IonBadge, IonSpinner, AlertController
+  IonContent, IonButton, IonFab, IonFabButton, IonFabList,
+  IonBadge, IonSpinner, AlertController, ToastController,
+  IonIcon
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { ProductosService } from '../../../services/productos.service';
 import { CategoriasService } from '../../../services/categorias.service';
 import { Categoria } from '../../../models/categoria.model';
+import { addIcons } from 'ionicons';
+import { add, addCircle, home, grid } from 'ionicons/icons';
 
 @Component({
   selector: 'app-lista',
@@ -16,8 +19,8 @@ import { Categoria } from '../../../models/categoria.model';
   styleUrls: ['./lista.page.scss'],
   standalone: true,
   imports: [
-    IonContent, IonButton, IonIcon, IonFab, IonFabButton, IonFabList,
-    IonBadge, IonSpinner,
+    IonContent, IonButton, IonFab, IonFabButton, IonFabList,
+    IonBadge, IonSpinner, IonIcon,
     CommonModule, FormsModule
   ]
 })
@@ -27,24 +30,26 @@ export class ListaPage implements OnInit {
   selectedCategory: Categoria | 'all' | null = null;
   isLoading: boolean = true;
 
-  // Colores para categorías
+  // Colores para categorías basados en el nombre
   private categoryColors = [
-    '#3880ff', '#3dc2ff', '#5260ff', '#2dd36f', '#ffc409',
-    '#eb445a', '#92949c', '#575757', '#0cd1e8', '#7044ff'
+    '#2dd36f'
   ];
 
   constructor(
     private router: Router,
     private productosService: ProductosService,
     private categoriasService: CategoriasService,
-    private alertController: AlertController
-  ) { }
+    private alertController: AlertController,
+    private toastController: ToastController
+  ) { 
+    // Registrar los iconos
+    addIcons({ add, addCircle, home, grid });
+  }
 
   ngOnInit() {
     this.loadData();
   }
 
-  // 🔄 Método que se ejecuta cada vez que la página se vuelve activa
   ionViewWillEnter() {
     console.log('🔄 ListaPage - ionViewWillEnter ejecutado');
     this.refreshData();
@@ -58,7 +63,7 @@ export class ListaPage implements OnInit {
     this.productosService.getAll().subscribe({
       next: (productos) => {
         this.productos = productos;
-        console.log('✅ Productos cargados en loadData:', this.productos.length);
+        console.log('✅ Productos cargados:', this.productos.length);
         
         this.categoriasService.getAll().subscribe({
           next: (categorias) => {
@@ -79,26 +84,23 @@ export class ListaPage implements OnInit {
     });
   }
 
-  // 🔄 Método para refrescar datos manualmente y automáticamente
   refreshData() {
     console.log('🔄 Ejecutando refreshData...');
     this.isLoading = true;
     
-    // Forzar recarga de productos desde Firestore
     this.productosService.refreshProducts().subscribe({
       next: (productos) => {
         this.productos = productos;
-        console.log('✅ Productos actualizados después del refresh:', this.productos.length);
+        console.log('✅ Productos actualizados:', this.productos.length);
         
-        // También refrescar categorías por si acaso
         this.categoriasService.getAll().subscribe({
           next: (categorias) => {
             this.categorias = categorias;
             this.isLoading = false;
-            console.log('✅ Refresh completado - Productos:', this.productos.length, 'Categorías:', this.categorias.length);
+            console.log('✅ Refresh completado');
           },
           error: (error) => {
-            console.error('❌ Error cargando categorías en refresh:', error);
+            console.error('❌ Error cargando categorías:', error);
             this.isLoading = false;
           }
         });
@@ -157,7 +159,7 @@ export class ListaPage implements OnInit {
     }
   }
 
-  // 🔄 MÉTODOS PARA ESTADÍSTICAS (solo los necesarios para las categorías)
+  // 🔄 MÉTODOS PARA ESTADÍSTICAS
   getLowStockInCategory(categoriaId: string): number {
     return this.getProductsByCategory(categoriaId).filter(producto => 
       this.isProductLowStock(producto)
@@ -177,34 +179,25 @@ export class ListaPage implements OnInit {
   }
 
   hasProducts(): boolean {
-    return this.productos.filter(producto => producto.activo !== false).length > 0;
+    const productosActivos = this.productos.filter(producto => producto.activo !== false);
+    return productosActivos.length > 0;
   }
 
-  // 🔄 MÉTODOS PARA UI
+  // 🔄 MÉTODOS PARA UI - SIN ICONOS
   getCategoryColor(categoriaId: string): string {
-    const index = categoriaId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const categoria = this.categorias.find(cat => cat.id === categoriaId);
+    const nombre = categoria?.nombre || categoriaId;
+    
+    const index = nombre.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return this.categoryColors[index % this.categoryColors.length];
   }
 
-  getCategoryIcon(categoryName: string): string {
-    const iconMap: { [key: string]: string } = {
-      'frutas': 'nutrition-outline',
-      'verduras': 'leaf-outline',
-      'lácteos': 'water-outline',
-      'carnes': 'restaurant-outline',
-      'bebidas': 'wine-outline',
-      'granos': 'egg-outline',
-      'condimentos': 'flask-outline',
-      'limpieza': 'sparkles-outline',
-      'bekidas': 'wine-outline'
-    };
-
-    const lowerName = categoryName.toLowerCase();
-    return iconMap[lowerName] || 'cube-outline';
+  getCategoryInitial(categoriaNombre: string): string {
+    return categoriaNombre.charAt(0).toUpperCase();
   }
 
   getProductColor(productName: string): string {
-    const colors = ['#3880ff', '#3dc2ff', '#5260ff', '#2dd36f', '#ffc409', '#eb445a'];
+    const colors = [ '#2dd36f'];
     const index = productName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return colors[index % colors.length];
   }
@@ -292,12 +285,26 @@ export class ListaPage implements OnInit {
   // 🔄 MÉTODOS PARA EDITAR Y ELIMINAR
   editarProducto(producto: any) {
     console.log('✏️ Editando producto:', producto);
-    this.router.navigate(['/editar-producto'], { 
-      state: { 
-        producto: producto,
-        categorias: this.categorias 
-      } 
+    
+    if (!producto.id) {
+      console.error('❌ El producto no tiene ID');
+      this.mostrarToast('Error: Producto sin ID', 'danger');
+      return;
+    }
+
+    // ✅ CORREGIDO: Usar parámetros de ruta en lugar de state
+    this.router.navigate(['/editar', producto.id]);
+  }
+
+  // ✅ AÑADIDO: Método mostrarToast que faltaba
+  async mostrarToast(mensaje: string, color: string = 'primary') {
+    const toast = await this.toastController.create({
+      message: mensaje,
+      duration: 3000,
+      color: color,
+      position: 'top'
     });
+    await toast.present();
   }
 
   async confirmarEliminacion(producto: any) {
@@ -331,10 +338,12 @@ export class ListaPage implements OnInit {
     this.productosService.softDelete(producto.id).subscribe({
       next: () => {
         console.log('✅ Producto desactivado correctamente');
-        this.refreshData(); // Refrescar para ver los cambios
+        this.mostrarToast('Producto eliminado correctamente', 'success');
+        this.refreshData();
       },
       error: (error) => {
         console.error('❌ Error eliminando producto:', error);
+        this.mostrarToast('Error al eliminar producto', 'danger');
       }
     });
   }

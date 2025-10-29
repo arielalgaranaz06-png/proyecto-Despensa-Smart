@@ -61,36 +61,32 @@ export class ProductosService {
 
   // Método refresh para forzar actualización
   refreshProducts(): Observable<Producto[]> {
-    console.log('🔄 Forzando actualización de productos...');
-    return this.http.get<any>(this.baseUrl).pipe(
-      map(response => {
-        console.log('🔍 Respuesta de refresh Firestore:', response);
-        
-        if (!response.documents) {
-          console.log('📭 No hay documentos en la respuesta de refresh');
-          const emptyArray: Producto[] = [];
-          this.productosSubject.next(emptyArray);
-          return emptyArray;
+  console.log('🔄 Forzando actualización de productos...');
+  return this.http.get<any>(this.baseUrl).pipe(
+    map(response => {
+      console.log('🔍 Respuesta CRUDA de Firestore:', response);
+      
+      if (!response.documents) {
+        console.log('📭 No hay documentos en la respuesta');
+        return [];
+      }
+      
+      const productos = response.documents.map((doc: any) => {
+        try {
+          const producto = this.mapFirestoreDocumentToProducto(doc);
+          console.log('✅ Producto mapeado - ID:', producto.id, 'Nombre:', producto.nombre);
+          return producto;
+        } catch (error) {
+          console.error('❌ Error mapeando producto:', error);
+          return null;
         }
-        
-        const productos = response.documents.map((doc: any) => {
-          try {
-            const producto = this.mapFirestoreDocumentToProducto(doc);
-            console.log('✅ Producto mapeado en refresh:', producto);
-            return producto;
-          } catch (error) {
-            console.error('❌ Error mapeando producto en refresh:', error, doc);
-            return null;
-          }
-        }).filter((producto: Producto | null) => producto !== null);
+      }).filter((producto: Producto | null) => producto !== null);
 
-        console.log('📦 Total productos después del refresh:', productos.length);
-        this.productosSubject.next(productos);
-        return productos;
-      }),
-      catchError(this.handleError)
-    );
-  }
+      console.log('📦 Total productos después del refresh:', productos.length);
+      return productos;
+    })
+  );
+}
 
   create(producto: Producto): Observable<any> {
     const firestoreData = {
@@ -147,7 +143,7 @@ export class ProductosService {
   private mapFirestoreDocumentToProducto(doc: any): Producto {
     const fields = doc.fields || {};
     const id = doc.name ? doc.name.split('/').pop() : undefined;
-
+    console.log('🆔 ID extraído:', id);
     console.log('📝 Mapeando campos del documento:', fields);
 
     // Mapeo flexible de campos

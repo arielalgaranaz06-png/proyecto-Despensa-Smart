@@ -1,13 +1,175 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>editar</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/lista"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Editar Producto</ion-title>
+    <ion-buttons slot="end" *ngIf="productoEncontrado && !isLoading">
+      <ion-button (click)="guardarCambios()" [strong]="true">
+        Guardar
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">editar</ion-title>
+      <ion-title size="large">Editar Producto</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Formulario cuando el producto está cargado -->
+  <div class="form-container" *ngIf="productoEncontrado && !isLoading">
+    <ion-list>
+      <!-- Nombre -->
+      <ion-item>
+        <ion-label position="stacked">Nombre del Producto *</ion-label>
+        <ion-input 
+          [(ngModel)]="producto.nombre" 
+          placeholder="Ej: Lechuga, Manzana..."
+          type="text">
+        </ion-input>
+      </ion-item>
+
+      <!-- Cantidad -->
+      <ion-item>
+        <ion-label position="stacked">Cantidad *</ion-label>
+        <ion-input 
+          [(ngModel)]="producto.cantidad" 
+          placeholder="0"
+          type="number"
+          min="0">
+        </ion-input>
+      </ion-item>
+
+      <!-- Categoría -->
+      <ion-item>
+        <ion-label position="stacked">Categoría *</ion-label>
+        <ion-select 
+          [(ngModel)]="producto.categoriaId" 
+          placeholder="Selecciona una categoría"
+          interface="action-sheet">
+          <ion-select-option 
+            *ngFor="let categoria of categorias" 
+            [value]="categoria.id">
+            {{ categoria.nombre }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Stock Mínimo -->
+      <ion-item>
+        <ion-label position="stacked">Stock Mínimo</ion-label>
+        <ion-input 
+          [(ngModel)]="producto.minimoStock" 
+          placeholder="2"
+          type="number"
+          min="1">
+        </ion-input>
+      </ion-item>
+
+      <!-- Fecha de Vencimiento -->
+      <ion-item>
+        <ion-label position="stacked">Fecha de Vencimiento</ion-label>
+        <ion-datetime-button datetime="datetime"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime 
+              id="datetime"
+              [(ngModel)]="fechaVencimientoTemp"
+              (ionChange)="onFechaVencimientoChange($event)"
+              presentation="date"
+              locale="es-ES"
+              [value]="fechaVencimientoTemp">
+            </ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+
+      <!-- Mostrar fecha seleccionada -->
+      <ion-item *ngIf="producto.fechaVencimiento">
+        <ion-label>
+          <h3>Fecha seleccionada:</h3>
+          <p>{{ producto.fechaVencimiento | date:'fullDate' }}</p>
+        </ion-label>
+        <ion-button 
+          fill="clear" 
+          color="medium" 
+          (click)="limpiarFechaVencimiento()">
+          Limpiar
+        </ion-button>
+      </ion-item>
+
+      <!-- Estado Activo -->
+      <ion-item>
+        <ion-toggle 
+          [(ngModel)]="producto.activo" 
+          justify="space-between">
+          <ion-label>Producto Activo</ion-label>
+        </ion-toggle>
+      </ion-item>
+
+      <!-- Información de registro (solo lectura) -->
+      <ion-item>
+        <ion-label class="readonly-field">
+          <h3>Fecha de Registro</h3>
+          <p>{{ producto.fechaRegistro | date:'medium' }}</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label class="readonly-field">
+          <h3>Última Modificación</h3>
+          <p>{{ producto.fechaModificacion | date:'medium' }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <!-- Botones de acción -->
+    <div class="action-buttons">
+      <ion-button 
+        expand="block" 
+        (click)="guardarCambios()"
+        color="primary"
+        [disabled]="!producto.nombre || !producto.categoriaId">
+        <ion-icon slot="start" name="save-outline"></ion-icon>
+        Guardar Cambios
+      </ion-button>
+
+      <ion-button 
+        expand="block" 
+        (click)="confirmarEliminar()"
+        color="danger" 
+        fill="outline">
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+        Eliminar Producto
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Loading mientras carga -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando producto...</p>
+  </div>
+
+  <!-- Mensaje de error si no se encuentra el producto -->
+  <div class="error-container" *ngIf="!productoEncontrado && !isLoading">
+    <ion-icon name="warning-outline" class="error-icon"></ion-icon>
+    <h3>Producto no encontrado</h3>
+    <p>El producto que intentas editar no existe o fue eliminado.</p>
+    <ion-button expand="block" (click)="volverAlInicio()">
+      Volver al Inicio
+    </ion-button>
+  </div>
 </ion-content>
+
+<!-- Alert para confirmaciones -->
+<ion-alert
+  [isOpen]="isAlertOpen"
+  header="Confirmación"
+  [message]="alertMessage"
+  [buttons]="alertButtons"
+  (didDismiss)="onAlertConfirm($event)">
+</ion-alert>
