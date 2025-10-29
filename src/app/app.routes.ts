@@ -38,6 +38,11 @@ export const routes: Routes = [
     path: 'configuracion',
     loadComponent: () => import('./pages/configuracion/configuracion.page').then( m => m.ConfiguracionPage)
   },
+  {
+  path: 'lista-compras',
+  loadComponent: () => import('./pages/lista-compras/lista-compras.page').then( m => m.ListaComprasPage)
+  },
+
 
 
 ];

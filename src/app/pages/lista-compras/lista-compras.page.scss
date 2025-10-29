@@ -1,0 +1,119 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  
+  ion-spinner {
+    margin-bottom: 16px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+  }
+}
+
+// Estilos de prioridad
+.prioridad-alta {
+  --background: #ffebee;
+  border-left: 4px solid var(--ion-color-danger);
+  
+  ion-checkbox {
+    --border-color: var(--ion-color-danger);
+    --checkmark-color: var(--ion-color-danger);
+  }
+}
+
+.prioridad-media {
+  --background: #fff3e0;
+  border-left: 4px solid var(--ion-color-warning);
+  
+  ion-checkbox {
+    --border-color: var(--ion-color-warning);
+    --checkmark-color: var(--ion-color-warning);
+  }
+}
+
+.prioridad-baja {
+  --background: #e8f5e8;
+  border-left: 4px solid var(--ion-color-success);
+  
+  ion-checkbox {
+    --border-color: var(--ion-color-success);
+    --checkmark-color: var(--ion-color-success);
+  }
+}
+
+.prioridad-badge {
+  font-size: 0.7em;
+  margin-right: 8px;
+}
+
+// ELIMINAR completamente esta parte que causa error:
+// .getPrioridadColor(prioridad: string) {
+//   @if prioridad == 'alta' {
+//     return 'danger';
+//   } @else if prioridad == 'media' {
+//     return 'warning';
+//   } @else {
+//     return 'success';
+//   }
+// }
+
+.cantidad {
+  font-size: 0.9em;
+  color: var(--ion-color-medium);
+  margin-left: 8px;
+}
+
+.motivo {
+  font-size: 0.8em;
+  color: var(--ion-color-dark);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+.manual-badge {
+  font-size: 0.7em;
+  color: var(--ion-color-tertiary);
+  display: flex;
+  align-items: center;
+  
+  ion-icon {
+    margin-right: 4px;
+  }
+}
+
+// Estilos para items marcados como comprados
+ion-checkbox[checked] + ion-label {
+  h2 {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+  
+  p {
+    opacity: 0.6;
+  }
+}
+
+// Mejoras visuales para la lista
+ion-list-header {
+  --background: var(--ion-color-light);
+  --border-color: var(--ion-color-medium-shade);
+}
+
+ion-fab-button {
+  --background: var(--ion-color-primary);
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .prioridad-badge {
+    font-size: 0.6em;
+  }
+  
+  .cantidad {
+    font-size: 0.8em;
+  }
+}

@@ -1,0 +1,146 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu-principal"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Lista de Compras Inteligente</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="regenerarLista()" [disabled]="cargando">
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Generando lista inteligente...</p>
+  </div>
+
+  <!-- Contenido Principal -->
+  <div *ngIf="!cargando">
+
+    <!-- Banner Información -->
+    <ion-card color="light" *ngIf="items.length === 0">
+      <ion-card-content class="ion-text-center">
+        <ion-icon name="cart-outline" size="large" color="medium"></ion-icon>
+        <h3>No hay productos en la lista</h3>
+        <p>Tu despensa está bien surtida o genera una nueva lista.</p>
+        <ion-button (click)="regenerarLista()" fill="outline">
+          Generar Lista
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Resumen cuando hay items -->
+    <ion-card *ngIf="items.length > 0" color="primary">
+      <ion-card-content class="ion-text-center">
+        <h2>{{ items.length }} productos para comprar</h2>
+        <p>Lista generada automáticamente según tu despensa</p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Botón Agregar Manual -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!mostrarAgregarManual">
+      <ion-fab-button (click)="toggleAgregarManual()">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+    <!-- Formulario Agregar Manual -->
+    <ion-card *ngIf="mostrarAgregarManual">
+      <ion-card-header>
+        <ion-card-title>Agregar Producto Manual</ion-card-title>
+        <ion-button fill="clear" size="small" (click)="toggleAgregarManual()">
+          <ion-icon name="close" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Nombre del Producto</ion-label>
+          <ion-input 
+            [(ngModel)]="nuevoItemManual.nombre" 
+            placeholder="Ej: Leche, Pan, etc."
+            type="text">
+          </ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label position="stacked">Categoría</ion-label>
+          <ion-input 
+            [(ngModel)]="nuevoItemManual.categoriaNombre" 
+            placeholder="Ej: Lácteos, Panadería, etc."
+            type="text">
+          </ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label position="stacked">Cantidad</ion-label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="nuevoItemManual.cantidad" 
+            min="1"
+            max="100">
+          </ion-input>
+        </ion-item>
+        
+        <ion-button 
+          expand="block" 
+          (click)="agregarItemManual()" 
+          [disabled]="!nuevoItemManual.nombre.trim() || !nuevoItemManual.categoriaNombre.trim()">
+          <ion-icon name="add-circle" slot="start"></ion-icon>
+          Agregar a Lista
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Lista por Categorías -->
+    <div *ngIf="items.length > 0">
+      <ion-list *ngFor="let categoria of categoriasUnicas">
+        <ion-list-header>
+          <ion-label>{{ categoria }}</ion-label>
+          <ion-badge color="primary">{{ obtenerItemsPorCategoria(categoria).length }}</ion-badge>
+        </ion-list-header>
+        
+        <ion-item-sliding *ngFor="let item of obtenerItemsPorCategoria(categoria)">
+          <ion-item [class]="'prioridad-' + item.prioridad">
+            <ion-checkbox 
+              slot="start" 
+              (ionChange)="marcarComprado(item)"
+              aria-label="Marcar como comprado">
+            </ion-checkbox>
+            
+            <ion-label class="ion-text-wrap">
+              <h2>{{ item.nombre }}</h2>
+              <p>
+                <ion-badge [color]="getPrioridadColor(item.prioridad)" class="prioridad-badge">
+                  {{ item.prioridad | titlecase }}
+                </ion-badge>
+                <span class="cantidad">Cantidad: {{ item.cantidadUsuario }}</span>
+              </p>
+              <p class="motivo" *ngIf="item.motivo">{{ item.motivo }}</p>
+              <p class="manual-badge" *ngIf="item.esManual">
+                <ion-icon name="create-outline" size="small"></ion-icon>
+                Agregado manualmente
+              </p>
+            </ion-label>
+            
+            <ion-button fill="clear" (click)="editarCantidad(item)" slot="end">
+              <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+          
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="eliminarItem(item)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              Eliminar
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </div>
+
+  </div>
+</ion-content>

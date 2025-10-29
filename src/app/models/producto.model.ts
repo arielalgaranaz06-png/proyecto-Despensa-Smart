@@ -1,3 +1,4 @@
+// models/producto.model.ts - MANTENER tu estructura actual
 export interface Producto {
   id?: string;
   nombre: string;
@@ -13,5 +14,21 @@ export interface Producto {
   categoria?: any;
   tipo?: string;
   precio?: number;
-  fecholvercimiento?: string; // Posible error de escritura en la base de datos
+  fecholvercimiento?: string;
+}
+
+// ✅ NUEVO: Modelo para Lista de Compras
+export interface ItemListaCompras {
+  id?: string;
+  productoId?: string;
+  nombre: string;
+  categoriaId: string;
+  categoriaNombre?: string; // Para mostrar el nombre de la categoría
+  cantidadRecomendada: number;
+  cantidadUsuario: number;
+  prioridad: 'alta' | 'media' | 'baja';
+  comprado: boolean;
+  usuarioId: string;
+  esManual: boolean;
+  motivo: string; // Por qué se incluyó en la lista
 }

@@ -1,3 +1,10 @@
 <ion-app>
   <ion-router-outlet></ion-router-outlet>
+  
+  <!-- BOTÓN TEMPORAL PARA PROBAR LISTA DE COMPRAS -->
+  <ion-fab vertical="top" horizontal="end" slot="fixed" style="z-index: 9999;">
+    <ion-fab-button size="small" color="success" [routerLink]="['/lista-compras']">
+      <ion-icon name="cart"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-app>
