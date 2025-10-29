@@ -1,0 +1,255 @@
+.main-content {
+  padding: 0 5px;
+}
+
+/* Panel de Información Moderno */
+.info-panel {
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, #42C975 100%);
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 25px;
+  color: white;
+  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+}
+
+.panel-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.panel-subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  margin: 0 0 25px 0;
+}
+
+.stats-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.stat-card.modern {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  &.warning {
+    background: rgba(243, 156, 18, 0.15);
+  }
+}
+
+.stat-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stat-icon-wrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .stat-icon {
+    font-size: 24px;
+    color: white;
+  }
+}
+
+.stat-text {
+  .stat-number {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  
+  .stat-label {
+    font-size: 12px;
+    opacity: 0.9;
+    margin-top: 4px;
+  }
+}
+
+/* Sección de Productos Moderna */
+.products-panel {
+  margin-bottom: 25px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin: 0;
+}
+
+.see-all-btn {
+  --color: var(--ion-color-primary);
+  font-weight: 600;
+  
+  ion-icon {
+    font-size: 16px;
+  }
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.product-card {
+  background: var(--ion-item-background);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--ion-border-color);
+}
+
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.product-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ion-text-color);
+  flex: 1;
+  margin-right: 10px;
+}
+
+.status-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ion-color-medium);
+}
+
+.detail-icon {
+  font-size: 14px;
+  color: var(--ion-color-primary);
+}
+
+.expiry-date {
+  color: var(--ion-color-danger);
+  font-weight: 500;
+}
+
+/* Navegación Moderna */
+.navigation-panel {
+  margin-bottom: 25px;
+}
+
+.nav-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nav-card.modern {
+  margin: 0;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--ion-border-color);
+  
+  .nav-card-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+  }
+}
+
+.nav-icon-wrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &.primary {
+    background: rgba(39, 174, 96, 0.1);
+    color: var(--ion-color-primary);
+  }
+  
+  &.secondary {
+    background: rgba(255, 127, 80, 0.1);
+    color: var(--ion-color-secondary);
+  }
+  
+  &.neutral {
+    background: rgba(108, 117, 125, 0.1);
+    color: var(--ion-color-medium);
+  }
+  
+  ion-icon {
+    font-size: 24px;
+  }
+}
+
+.nav-text {
+  flex: 1;
+  
+  h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+  
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.nav-arrow {
+  color: var(--ion-color-medium);
+  font-size: 18px;
+}
+
+/* Estados vacíos y loading se mantienen igual */
+.loading-container {
+  text-align: center;
+  padding: 60px 20px;
+  
+  ion-spinner {
+    margin-bottom: 15px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+  }
+}

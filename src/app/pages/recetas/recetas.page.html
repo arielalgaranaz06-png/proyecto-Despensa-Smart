@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>recetas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">recetas</ion-title>
+      <ion-button 
+        expand="block"
+        class="login-button"
+        (click)="gotoMenuPrincipal()">
+        Iniciar Sesión
+      </ion-button>
+    </ion-toolbar>
+  </ion-header>
+  
+  <!-- Botón para volver al menú principal -->
+  <ion-button 
+    expand="block"
+    color="medium"
+    (click)="gotoMenuPrincipal()"
+    style="margin: 16px;">
+    Volver al Menú Principal
+  </ion-button>
+</ion-content>

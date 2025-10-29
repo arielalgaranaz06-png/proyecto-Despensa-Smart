@@ -1,0 +1,88 @@
+.form-card {
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+  margin-bottom: 8px;
+}
+
+.form-subtitle {
+  color: var(--ion-color-medium);
+  margin: 0;
+  font-size: 14px;
+}
+
+.form-item {
+  --border-radius: 8px;
+  --background: var(--ion-color-light);
+  margin-bottom: 16px;
+  
+  ion-label {
+    font-weight: 500;
+    color: var(--ion-color-dark);
+  }
+  
+  ion-input, ion-select, ion-datetime {
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+}
+
+.required {
+  color: var(--ion-color-danger);
+  font-weight: bold;
+}
+
+.form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.action-button {
+  margin: 0;
+  --border-radius: 8px;
+  height: 48px;
+}
+
+.button-spinner {
+  width: 18px;
+  height: 18px;
+}
+
+/* Estilos para el datetime */
+ion-datetime {
+  --background: var(--ion-color-light);
+  --border-radius: 8px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 480px) {
+  .form-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-title {
+    font-size: 20px;
+  }
+}
+
+/* Mejoras visuales para los inputs */
+ion-input, ion-select {
+  --background: white;
+  --border-radius: 8px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  border: 1px solid var(--ion-color-light-shade);
+}
+
+/* Estilo para el botón deshabilitado */
+ion-button[disabled] {
+  --opacity: 0.6;
+}

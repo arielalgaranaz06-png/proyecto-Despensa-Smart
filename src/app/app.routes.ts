@@ -2,28 +2,42 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
-  },
-  {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
-    path: 'menu-principal',
-    loadComponent: () => import('./menu-principal/menu-principal.page').then( m => m.MenuPrincipalPage)
+    path: 'login',
+    loadComponent: () => import('./pages/auth/login/login.page').then( m => m.LoginPage)
   },
   {
-    path: 'despensa',
-    loadComponent: () => import('./despensa/despensa.page').then( m => m.DespensaPage)
+    path: 'register',
+    loadComponent: () => import('./pages/auth/register/register.page').then( m => m.RegisterPage)
+  },
+  {
+    path: 'menu-principal',
+    loadComponent: () => import('./pages/menu-principal/menu-principal.page').then( m => m.MenuPrincipalPage)
+  },
+  {
+    path: 'lista',
+    loadComponent: () => import('./pages/despensa/lista/lista.page').then( m => m.ListaPage)
+  },
+  {
+    path: 'registro',
+    loadComponent: () => import('./pages/despensa/registro/registro.page').then( m => m.RegistroPage)
+  },
+  {
+    path: 'editar',
+    loadComponent: () => import('./pages/despensa/editar/editar.page').then( m => m.EditarPage)
   },
   {
     path: 'recetas',
-    loadComponent: () => import('./recetas/recetas.page').then( m => m.RecetasPage)
+    loadComponent: () => import('./pages/recetas/recetas.page').then( m => m.RecetasPage)
   },
   {
     path: 'configuracion',
-    loadComponent: () => import('./configuracion/configuracion.page').then( m => m.ConfiguracionPage)
+    loadComponent: () => import('./pages/configuracion/configuracion.page').then( m => m.ConfiguracionPage)
   },
+
+
 ];

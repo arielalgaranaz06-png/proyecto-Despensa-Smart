@@ -1,0 +1,132 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+  </ion-toolbar>
+  <ion-title>Mi Despensa</ion-title>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Cargando productos...</p>
+  </div>
+
+  <!-- Contenido principal -->
+  <div *ngIf="!isLoading" class="main-content">
+    
+    <!-- Panel de Información Moderno -->
+    <div class="info-panel">
+      <h2 class="panel-title">Panel de Información</h2>
+      <p class="panel-subtitle">Aquí se mostrarán los datos de tu despensa</p>
+      
+      <div class="stats-cards">
+        <div class="stat-card modern">
+          <div class="stat-content">
+            <div class="stat-icon-wrapper">
+              <ion-icon name="cube-outline" class="stat-icon"></ion-icon>
+            </div>
+            <div class="stat-text">
+              <div class="stat-number">{{totalProductos}}</div>
+              <div class="stat-label">Productos Totales</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card modern warning">
+          <div class="stat-content">
+            <div class="stat-icon-wrapper">
+              <ion-icon name="warning-outline" class="stat-icon"></ion-icon>
+            </div>
+            <div class="stat-text">
+              <div class="stat-number">{{productosPorAgotarse}}</div>
+              <div class="stat-label">Stock Bajo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Productos Recientes Moderna -->
+    <div class="products-panel" *ngIf="productosRecientes.length > 0">
+      <div class="section-header">
+        <h3 class="section-title">Productos Recientes</h3>
+        <ion-button fill="clear" size="small" class="see-all-btn" (click)="goToDespensa()">
+          Ver Todos
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="products-grid">
+        <div *ngFor="let producto of productosRecientes" class="product-card">
+          <div class="product-header">
+            <span class="product-name">{{getProductName(producto)}}</span>
+            <ion-badge [color]="getProductBadgeColor(producto)" class="status-badge">
+              {{getProductStatus(producto)}}
+            </ion-badge>
+          </div>
+          
+          <div class="product-details">
+            <div class="detail-item">
+              <ion-icon name="pricetag-outline" class="detail-icon"></ion-icon>
+              <span>{{getProductQuantity(producto)}} unidades</span>
+            </div>
+            
+            <div *ngIf="producto.precio" class="detail-item">
+              <ion-icon name="cash-outline" class="detail-icon"></ion-icon>
+              <span>${{producto.precio}}</span>
+            </div>
+            
+            <div *ngIf="producto.fecholvercimiento" class="detail-item">
+              <ion-icon name="calendar-outline" class="detail-icon"></ion-icon>
+              <span class="expiry-date">{{formatDate(producto.fecholvercimiento)}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menú de Navegación Moderno -->
+    <div class="navigation-panel">
+      <div class="nav-cards">
+        <ion-card class="nav-card modern" (click)="goToDespensa()">
+          <div class="nav-card-content">
+            <div class="nav-icon-wrapper primary">
+              <ion-icon name="basket-outline"></ion-icon>
+            </div>
+            <div class="nav-text">
+              <h4>Despensa</h4>
+              <p>Gestiona tus productos</p>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="nav-arrow"></ion-icon>
+          </div>
+        </ion-card>
+
+        <ion-card class="nav-card modern" (click)="goToRecetas()">
+          <div class="nav-card-content">
+            <div class="nav-icon-wrapper secondary">
+              <ion-icon name="book-outline"></ion-icon>
+            </div>
+            <div class="nav-text">
+              <h4>Recetas</h4>
+              <p>Descubre recetas</p>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="nav-arrow"></ion-icon>
+          </div>
+        </ion-card>
+
+        <ion-card class="nav-card modern" (click)="goToConfiguracion()">
+          <div class="nav-card-content">
+            <div class="nav-icon-wrapper neutral">
+              <ion-icon name="settings-outline"></ion-icon>
+            </div>
+            <div class="nav-text">
+              <h4>Configuración</h4>
+              <p>Ajustes de la app</p>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="nav-arrow"></ion-icon>
+          </div>
+        </ion-card>
+      </div>
+    </div>
+  </div>
+</ion-content>

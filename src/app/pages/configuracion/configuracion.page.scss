@@ -1,0 +1,51 @@
+.accordion-header {
+  --background: var(--ion-item-background);
+  --border-radius: 12px;
+  margin: 8px 0;
+}
+
+.accordion-icon {
+  font-size: 20px;
+  color: var(--ion-color-primary);
+  margin-right: 12px;
+}
+
+.accordion-content {
+  background: var(--ion-color-light);
+  border-radius: 0 0 12px 12px;
+  padding: 0;
+}
+
+.option-icon {
+  font-size: 18px;
+  color: var(--ion-color-medium);
+  margin-right: 12px;
+}
+
+.test-button {
+  margin: 16px;
+}
+
+.logout-item {
+  --background: rgba(231, 76, 60, 0.1);
+  
+  .logout-icon {
+    color: var(--ion-color-danger);
+  }
+  
+  h3 {
+    color: var(--ion-color-danger);
+    font-weight: 600;
+  }
+}
+
+ion-toggle {
+  --background: var(--ion-color-medium);
+  --background-checked: var(--ion-color-primary);
+  --handle-background: white;
+  --handle-background-checked: white;
+}
+
+ion-item[disabled] {
+  opacity: 0.5;
+}

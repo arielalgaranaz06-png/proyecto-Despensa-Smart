@@ -1,0 +1,61 @@
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <div class="header">
+      <h1>Despensa Smart</h1>
+      <p>Inicia sesión en tu cuenta</p>
+    </div>
+
+    <form (ngSubmit)="login()" class="form-container">
+      <ion-item>
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input 
+          type="email" 
+          [(ngModel)]="username" 
+          name="username"
+          placeholder="tu@email.com"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input 
+          type="password" 
+          [(ngModel)]="password" 
+          name="password"
+          placeholder="Tu contraseña"
+          required>
+        </ion-input>
+      </ion-item>
+
+      <ion-button 
+        type="submit" 
+        expand="block" 
+        [disabled]="isLoading"
+        class="login-button">
+        <ion-spinner *ngIf="isLoading"></ion-spinner>
+        {{ isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+      </ion-button>
+    </form>
+
+    <div class="register-section">
+      <p>¿No tienes cuenta?</p>
+      <ion-button 
+        fill="clear" 
+        expand="block" 
+        (click)="goToRegister()"
+        [disabled]="isLoading">
+        Crear Cuenta
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Toast para mensajes -->
+  <ion-toast
+    [isOpen]="showToast"
+    [message]="errorMessage"
+    [duration]="5000"
+    (didDismiss)="onToastDismiss()"
+    position="top">
+  </ion-toast>
+</ion-content>

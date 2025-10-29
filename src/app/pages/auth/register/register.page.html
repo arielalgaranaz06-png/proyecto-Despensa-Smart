@@ -1,0 +1,75 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="register-container">
+    <!-- Icono de usuario en lugar de logo -->
+    <div class="icon-container">
+      <ion-icon name="person-circle-outline" class="user-icon"></ion-icon>
+      <h1 class="app-title">Crear Cuenta</h1>
+      <p class="app-subtitle">Regístrate para comenzar</p>
+    </div>
+
+    <div class="form-container">
+      <!-- Campo de email -->
+      <ion-item class="custom-item">
+        <ion-label position="stacked">Email</ion-label>
+        <ion-input 
+          type="email" 
+          placeholder="tu@email.com"
+          class="custom-input"
+          [(ngModel)]="email">
+        </ion-input>
+      </ion-item>
+
+      <!-- Campo de contraseña con icono para mostrar/ocultar -->
+      <ion-item class="custom-item">
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input 
+          [type]="showPassword ? 'text' : 'password'" 
+          placeholder="Mínimo 6 caracteres"
+          class="custom-input"
+          [(ngModel)]="password">
+        </ion-input>
+        <ion-icon 
+          slot="end" 
+          [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+          (click)="togglePasswordVisibility()"
+          class="password-toggle">
+        </ion-icon>
+      </ion-item>
+
+      <!-- Confirmar contraseña con icono para mostrar/ocultar -->
+      <ion-item class="custom-item">
+        <ion-label position="stacked">Confirmar Contraseña</ion-label>
+        <ion-input 
+          [type]="showConfirmPassword ? 'text' : 'password'" 
+          placeholder="Repite tu contraseña"
+          class="custom-input"
+          [(ngModel)]="confirmPassword">
+        </ion-input>
+        <ion-icon 
+          slot="end" 
+          [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'"
+          (click)="toggleConfirmPasswordVisibility()"
+          class="password-toggle">
+        </ion-icon>
+      </ion-item>
+
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Botón de registro -->
+      <ion-button 
+        expand="block" 
+        class="register-button"
+        (click)="register()">
+        Crear Cuenta
+      </ion-button>
+
+      <!-- Enlace para ir a login -->
+      <div class="login-link">
+        <p>¿Ya tienes cuenta? <a (click)="goToLogin()">Inicia Sesión</a></p>
+      </div>
+    </div>
+  </div>
+</ion-content>

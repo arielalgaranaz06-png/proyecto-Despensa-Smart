@@ -35,3 +35,44 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+/* ===== PALETA DE COLORES - DESPENSA SMART ===== */
+:root {
+  /* Colores principales */
+  --ion-color-primary: #27AE60;
+  --ion-color-primary-rgb: 39, 174, 96;
+  --ion-color-primary-contrast: #FFFFFF;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #229954;
+  --ion-color-primary-tint: #42C975;
+
+  /* Color secundario */
+  --ion-color-secondary: #FF7F50;
+  --ion-color-secondary-rgb: 255, 127, 80;
+  --ion-color-secondary-contrast: #FFFFFF;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #E06F46;
+  --ion-color-secondary-tint: #FF9470;
+
+  /* Colores de estado */
+  --ion-color-success: #2ECC71;
+  --ion-color-warning: #F39C12;
+  --ion-color-danger: #E74C3C;
+
+  /* Colores neutros */
+  --ion-color-light: #F8F9FA;
+  --ion-color-medium: #6C757D;
+  --ion-color-dark: #343A40;
+
+  /* Fondos y superficies */
+  --ion-background-color: #FFFFFF;
+  --ion-item-background: #FFFFFF;
+  --ion-card-background: #FFFFFF;
+
+  /* Texto */
+  --ion-text-color: #343A40;
+  --ion-text-color-rgb: 52, 58, 64;
+
+  /* Bordes */
+  --ion-border-color: #E9ECEF;
+  --ion-item-border-color: #F1F3F4;
+}

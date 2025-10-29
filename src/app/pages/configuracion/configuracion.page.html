@@ -1,0 +1,271 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Configuración</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  
+  <!-- Sección Perfil de Usuario -->
+  <ion-accordion-group>
+    <ion-accordion value="profile">
+      <ion-item slot="header" class="accordion-header">
+        <ion-icon name="person-circle-outline" slot="start" class="accordion-icon"></ion-icon>
+        <ion-label>Perfil de Usuario</ion-label>
+      </ion-item>
+      <div slot="content" class="accordion-content">
+        <ion-list>
+          <!-- Editar nombre -->
+          <ion-item (click)="openEditName()" button>
+            <ion-icon name="pencil-outline" slot="start" class="option-icon"></ion-icon>
+            <ion-label>
+              <h3>Editar Nombre</h3>
+              <p>Cambiar tu nombre de usuario</p>
+            </ion-label>
+            <ion-button fill="clear" size="small">
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <!-- Editar email -->
+          <ion-item (click)="openEditEmail()" button>
+            <ion-icon name="mail-outline" slot="start" class="option-icon"></ion-icon>
+            <ion-label>
+              <h3>Editar Email</h3>
+              <p>Cambiar dirección de correo</p>
+            </ion-label>
+            <ion-button fill="clear" size="small">
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <!-- Foto de perfil -->
+          <ion-item (click)="updateProfilePhoto()" button>
+            <ion-icon name="camera-outline" slot="start" class="option-icon"></ion-icon>
+            <ion-label>
+              <h3>Foto de Perfil</h3>
+              <p>Cambiar imagen de perfil</p>
+            </ion-label>
+            <ion-button fill="clear" size="small">
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <!-- Información de cuenta -->
+          <ion-item (click)="showAccountInfo()" button>
+            <ion-icon name="information-circle-outline" slot="start" class="option-icon"></ion-icon>
+            <ion-label>
+              <h3>Información de Cuenta</h3>
+              <p>Ver detalles de tu cuenta</p>
+            </ion-label>
+            <ion-button fill="clear" size="small">
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-accordion>
+
+    <!-- Sección Notificaciones -->
+    <ion-accordion value="notifications">
+      <ion-item slot="header" class="accordion-header">
+        <ion-icon name="notifications-outline" slot="start" class="accordion-icon"></ion-icon>
+        <ion-label>Notificaciones</ion-label>
+      </ion-item>
+      <div slot="content" class="accordion-content">
+        <ion-list>
+          <!-- Activar/Desactivar Notificaciones -->
+          <ion-item>
+            <ion-toggle 
+              [(ngModel)]="notificationsEnabled"
+              (ionChange)="toggleNotifications()"
+              slot="start">
+            </ion-toggle>
+            <ion-label>
+              <h3>Notificaciones Push</h3>
+              <p>Recibir alertas y recordatorios</p>
+            </ion-label>
+          </ion-item>
+
+          <!-- Recordatorios Stock Bajo -->
+          <ion-item [disabled]="!notificationsEnabled">
+            <ion-toggle 
+              [(ngModel)]="lowStockAlerts"
+              (ionChange)="saveNotificationSettings()"
+              slot="start">
+            </ion-toggle>
+            <ion-label>
+              <h3>Stock Bajo</h3>
+              <p>Alertas cuando productos estén por agotarse</p>
+            </ion-label>
+          </ion-item>
+
+          <!-- Recordatorios Caducidad -->
+          <ion-item [disabled]="!notificationsEnabled">
+            <ion-toggle 
+              [(ngModel)]="expiryAlerts"
+              (ionChange)="saveNotificationSettings()"
+              slot="start">
+            </ion-toggle>
+            <ion-label>
+              <h3>Fechas de Caducidad</h3>
+              <p>Alertas cuando productos estén por caducar</p>
+            </ion-label>
+          </ion-item>
+
+          <!-- Recetas Sugeridas -->
+          <ion-item [disabled]="!notificationsEnabled">
+            <ion-toggle 
+              [(ngModel)]="recipeSuggestions"
+              (ionChange)="saveNotificationSettings()"
+              slot="start">
+            </ion-toggle>
+            <ion-label>
+              <h3>Recetas Sugeridas</h3>
+              <p>Notificaciones de recetas con tus productos</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <!-- Botón de prueba -->
+        <ion-button 
+          expand="block" 
+          fill="outline"
+          (click)="testNotifications()"
+          [disabled]="!notificationsEnabled"
+          class="test-button">
+          Probar Notificaciones
+        </ion-button>
+      </div>
+    </ion-accordion>
+
+    <!-- Sección Seguridad -->
+    <ion-accordion value="security">
+      <ion-item slot="header" class="accordion-header">
+        <ion-icon name="shield-checkmark-outline" slot="start" class="accordion-icon"></ion-icon>
+        <ion-label>Seguridad</ion-label>
+      </ion-item>
+      <div slot="content" class="accordion-content">
+        <ion-list>
+          <!-- Cambiar contraseña -->
+          <ion-item (click)="openChangePassword()" button>
+            <ion-icon name="key-outline" slot="start" class="option-icon"></ion-icon>
+            <ion-label>
+              <h3>Cambiar Contraseña</h3>
+              <p>Actualizar tu contraseña de acceso</p>
+            </ion-label>
+            <ion-button fill="clear" size="small">
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <!-- Cerrar sesión en todos los dispositivos -->
+          <ion-item (click)="logoutAllDevices()" button>
+            <ion-icon name="log-out-outline" slot="start" class="option-icon"></ion-icon>
+            <ion-label>
+              <h3>Cerrar Sesión en Todos los Dispositivos</h3>
+              <p>Revocar acceso desde otros dispositivos</p>
+            </ion-label>
+            <ion-button fill="clear" size="small" color="warning">
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <!-- Cerrar sesión actual -->
+          <ion-item (click)="logout()" button class="logout-item">
+            <ion-icon name="power-outline" slot="start" class="option-icon logout-icon"></ion-icon>
+            <ion-label>
+              <h3>Cerrar Sesión</h3>
+              <p>Salir de la aplicación</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+
+  <!-- Alertas para formularios -->
+  <ion-alert
+    [isOpen]="showNameAlert"
+    header="Editar Nombre"
+    [buttons]="alertButtonsName"
+    [inputs]="[
+      { 
+        name: 'name', 
+        type: 'text', 
+        placeholder: 'Nuevo nombre',
+        value: newName,
+        attributes: {
+          maxlength: 50
+        }
+      }
+    ]"
+    (didDismiss)="onNameAlertDismiss($event)">
+  </ion-alert>
+
+  <ion-alert
+    [isOpen]="showEmailAlert"
+    header="Editar Email"
+    [buttons]="alertButtonsEmail"
+    [inputs]="[
+      { 
+        name: 'email', 
+        type: 'email', 
+        placeholder: 'Nuevo email',
+        value: newEmail
+      }
+    ]"
+    (didDismiss)="onEmailAlertDismiss($event)">
+  </ion-alert>
+
+  <ion-alert
+    [isOpen]="showPasswordAlert"
+    header="Cambiar Contraseña"
+    [buttons]="alertButtonsPassword"
+    [inputs]="[
+      { 
+        name: 'password', 
+        type: 'password', 
+        placeholder: 'Nueva contraseña'
+      },
+      { 
+        name: 'confirmPassword', 
+        type: 'password', 
+        placeholder: 'Confirmar contraseña'
+      }
+    ]"
+    (didDismiss)="onPasswordAlertDismiss($event)">
+  </ion-alert>
+<!-- Alerta de reautenticación -->
+<ion-alert
+  [isOpen]="showReauthAlert"
+  header="Verificación de Seguridad"
+  subHeader="Por seguridad, ingresa tu contraseña actual"
+  [buttons]="alertButtonsReauth"
+  [inputs]="[
+    { 
+      name: 'password', 
+      type: 'password', 
+      placeholder: 'Contraseña actual'
+    }
+  ]"
+  (didDismiss)="onReauthAlertDismiss($event)">
+</ion-alert>
+ <!-- Botón para volver al menú principal -->
+  <ion-button 
+    expand="block"
+    color="medium"
+    (click)="gotoMenuPrincipal()"
+    style="margin: 16px;">
+    Volver al Menú Principal
+  </ion-button>
+
+  <!-- Toast para mensajes -->
+  <ion-toast
+    [isOpen]="showToast"
+    [message]="toastMessage"
+    [duration]="5000"
+    (didDismiss)="showToast = false">
+  </ion-toast>
+
+</ion-content>

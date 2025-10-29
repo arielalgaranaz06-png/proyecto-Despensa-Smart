@@ -1,0 +1,66 @@
+.register-container {
+  padding-top: 40px;
+  min-height: 10vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.icon-container {
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 20px;
+}
+
+.user-icon {
+  font-size: 80px;
+  color: var(--ion-color-primary);
+  display: block;
+  margin: 0 auto 15px;
+}
+
+.form-container {
+  margin-top: 20px;
+}
+
+.password-toggle {
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--ion-color-medium);
+}
+
+.error-message {
+  color: var(--ion-color-danger);
+  text-align: center;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.register-button {
+  --background: var(--ion-color-primary);
+  --background-activated: var(--ion-color-primary-shade);
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+  
+  a {
+    color: var(--ion-color-secondary);
+    text-decoration: none;
+    cursor: pointer;
+  }
+}
+
+.custom-item {
+  --border-color: var(--ion-border-color);
+  --background: var(--ion-item-background);
+}
+
+.app-title {
+  color: var(--ion-text-color);
+}
+
+.app-subtitle {
+  color: var(--ion-color-medium);
+}

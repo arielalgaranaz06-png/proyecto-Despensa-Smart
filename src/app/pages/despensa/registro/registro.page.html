@@ -1,0 +1,143 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu-principal"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Agregar Producto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Formulario de registro -->
+  <ion-card class="form-card">
+    <ion-card-header>
+      <ion-card-title class="form-title">
+        Nuevo Producto
+      </ion-card-title>
+      <p class="form-subtitle">Agrega un producto a tu despensa</p>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form (ngSubmit)="onSubmit()" #productForm="ngForm">
+        
+        <!-- Nombre del Producto -->
+        <ion-item class="form-item">
+          <ion-label position="stacked">
+            Nombre <span class="required">*</span>
+          </ion-label>
+          <ion-input
+            type="text"
+            [(ngModel)]="producto.nombre"
+            name="nombre"
+            placeholder="Ej: Manzanas, Arroz, Leche..."
+            required>
+          </ion-input>
+        </ion-item>
+
+        <!-- Cantidad -->
+        <ion-item class="form-item">
+          <ion-label position="stacked">
+            Cantidad <span class="required">*</span>
+          </ion-label>
+          <ion-input
+            type="number"
+            [(ngModel)]="producto.cantidad"
+            name="cantidad"
+            placeholder="Ej: 5"
+            min="1"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <!-- En la sección de categoría, cambia: -->
+        <ion-item class="form-item">
+          <ion-label position="stacked">Categoría</ion-label>
+          <ion-select
+            [(ngModel)]="producto.categoriaId"
+            name="categoriaID"
+            placeholder="Selecciona una categoría">
+            
+            <!-- Loading para categorías -->
+            <ion-select-option *ngIf="isLoadingCategorias" value="" disabled>
+              Cargando categorías...
+            </ion-select-option>
+            
+            <!-- Mostrar categorías reales -->
+            <ion-select-option 
+              *ngFor="let cat of categorias" 
+              [value]="cat.id">  <!-- Usar cat.id en lugar de cat -->
+              {{cat.nombre}}
+            </ion-select-option>
+            
+            <!-- Si no hay categorías -->
+            <ion-select-option *ngIf="!isLoadingCategorias && categorias.length === 0" value="" disabled>
+              No hay categorías disponibles
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <!-- Fecha de Vencimiento -->
+        <ion-item class="form-item">
+          <ion-label position="stacked">Fecha de Vencimiento</ion-label>
+          <ion-datetime
+            [(ngModel)]="producto.fechaVencimiento"
+            name="fechaVencimiento"
+            presentation="date"
+            placeholder="Selecciona fecha">
+          </ion-datetime>
+        </ion-item>
+
+        <!-- Stock Mínimo -->
+        <ion-input
+          type="number"
+          [(ngModel)]="producto.minimoStock"
+          name="minimoStock"
+          placeholder="Ej: 2"
+          min="1"
+          [value]="2"> 
+        </ion-input>
+
+        <!-- Botones de acción -->
+        <div class="form-actions">
+          <ion-button 
+            type="button" 
+            expand="block" 
+            color="medium" 
+            (click)="goBack()"
+            class="action-button">
+            Cancelar
+          </ion-button>
+          
+          <ion-button 
+            type="submit" 
+            expand="block" 
+            color="primary"
+            [disabled]="isSubmitting || !producto.nombre || !producto.cantidad"
+            class="action-button">
+            <ion-spinner *ngIf="isSubmitting" class="button-spinner"></ion-spinner>
+            {{ isSubmitting ? 'Agregando...' : 'Agregar Producto' }}
+          </ion-button>
+        </div>
+
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Botón adicional para volver al menú principal -->
+  <ion-button 
+    expand="block"
+    color="light"
+    (click)="gotoMenuPrincipal()"
+    class="menu-button">
+    <ion-icon slot="start" name="home-outline"></ion-icon>
+    Volver al Menú Principal
+  </ion-button>
+
+  <!-- Toast para mensajes -->
+  <ion-toast
+    [isOpen]="showToast"
+    [message]="toastMessage"
+    [duration]="3000"
+    (didDismiss)="onToastDismiss()">
+  </ion-toast>
+</ion-content>
