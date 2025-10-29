@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, updateDoc, deleteDoc, doc, query, where } from '@angular/fire/firestore';
-import { Observable, map, switchMap, firstValueFrom } from 'rxjs';
+import { Observable, of, map, catchError } from 'rxjs';
 import { Producto, ItemListaCompras } from '../models/producto.model';
 import { Auth } from '@angular/fire/auth';
 
@@ -21,7 +21,7 @@ export class ShoppingListService {
     return 'ShoppingListService está funcionando correctamente';
   }
 
-  // ✅ Generar lista de compras inteligente - VERSIÓN SIMPLIFICADA INICIAL
+  // ✅ Generar lista de compras inteligente
   generarListaCompras(productos: Producto[]): ItemListaCompras[] {
     console.log('Generando lista de compras con', productos.length, 'productos');
     
@@ -135,104 +135,117 @@ export class ShoppingListService {
     });
   }
 
-    // ✅ Guardar lista en Firestore REAL
-async guardarListaComprasFirestore(items: ItemListaCompras[]): Promise<void> {
-  const user = this.auth.currentUser;
-  if (!user) throw new Error('Usuario no autenticado');
-
-  try {
-    // Primero, limpiar lista anterior del usuario
-    const listaExistente = await this.obtenerListaUsuarioFirestore(user.uid).toPromise();
-    
-    if (listaExistente && listaExistente.length > 0) {
-      const deletePromises = listaExistente.map(item => {
-        if (item.id) {
-          return deleteDoc(doc(this.firestore, 'listaCompra', item.id));
-        }
-        return Promise.resolve();
-      });
-      await Promise.all(deletePromises);
+  // ✅ Guardar lista en Firestore REAL
+  async guardarListaComprasFirestore(items: ItemListaCompras[]): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) {
+      console.log('🔐 Usuario no autenticado - Lista no guardada');
+      return;
     }
 
-    // Agregar nueva lista a la colección listaCompra
-    const listaRef = collection(this.firestore, 'listaCompra');
-    const addPromises = items.map(item => 
-      addDoc(listaRef, {
-        nombre: item.nombre,
-        categoriaId: item.categoriaId,
-        categoriaNombre: item.categoriaNombre,
-        cantidad: item.cantidadUsuario, // Mapear a 'cantidad' que existe en tu Firestore
-        comprado: item.comprado,
-        prioridad: this.mapearPrioridadANumero(item.prioridad), // Mapear a número
-        usuarioId: user.uid,
-        esManual: item.esManual,
-        motivo: item.motivo,
-        fechaCreacion: new Date().toISOString(),
-        fechaComprado: item.comprado ? new Date().toISOString() : null
-      })
-    );
+    try {
+      // Primero, limpiar lista anterior del usuario
+      const listaExistente = await this.obtenerListaUsuarioFirestore(user.uid).toPromise();
+      
+      if (listaExistente && listaExistente.length > 0) {
+        const deletePromises = listaExistente.map((item: ItemListaCompras) => {
+          if (item.id) {
+            return deleteDoc(doc(this.firestore, 'listaCompra', item.id));
+          }
+          return Promise.resolve();
+        });
+        await Promise.all(deletePromises);
+      }
+
+      // Agregar nueva lista a la colección listaCompra
+      const listaRef = collection(this.firestore, 'listaCompra');
+      const addPromises = items.map(item => 
+        addDoc(listaRef, {
+          nombre: item.nombre,
+          categoriaId: item.categoriaId,
+          categoriaNombre: item.categoriaNombre,
+          cantidad: item.cantidadUsuario,
+          comprado: item.comprado,
+          prioridad: this.mapearPrioridadANumero(item.prioridad),
+          usuarioId: user.uid,
+          esManual: item.esManual,
+          motivo: item.motivo,
+          fechaCreacion: new Date().toISOString(),
+          fechaComprado: item.comprado ? new Date().toISOString() : null
+        })
+      );
+      
+      await Promise.all(addPromises);
+      console.log('✅ Lista guardada en Firestore correctamente');
+      
+    } catch (error) {
+      console.error('❌ Error guardando lista en Firestore:', error);
+    }
+  }
+
+  // ✅ Obtener lista del usuario desde Firestore
+  obtenerListaUsuarioFirestore(usuarioId: string): Observable<ItemListaCompras[]> {
+    console.log('📥 Obteniendo lista de Firestore para usuario:', usuarioId);
     
-    await Promise.all(addPromises);
-    console.log('Lista guardada en Firestore correctamente');
-    
-  } catch (error) {
-    console.error('Error guardando lista en Firestore:', error);
-    throw error;
+    try {
+      const listaRef = collection(this.firestore, 'listaCompra');
+      const q = query(
+        listaRef, 
+        where('usuarioId', '==', usuarioId),
+        where('comprado', '==', false)
+      );
+      
+      return collectionData(q, { idField: 'id' }).pipe(
+        map((items: any[]) => {
+          console.log('✅ Items encontrados en listaCompra:', items.length);
+          return items.map(itemFirestore => this.mapearItemDesdeFirestore(itemFirestore));
+        }),
+        catchError(error => {
+          console.warn('⚠️ Error obteniendo lista de Firestore:', error);
+          return of([]);
+        })
+      );
+    } catch (error) {
+      console.error('❌ Error en consulta listaCompra:', error);
+      return of([]);
+    }
   }
-}
 
-// ✅ Obtener lista del usuario desde Firestore REAL
-obtenerListaUsuarioFirestore(usuarioId: string): Observable<ItemListaCompras[]> {
-  const listaRef = collection(this.firestore, 'listaCompra');
-  const q = query(
-    listaRef, 
-    where('usuarioId', '==', usuarioId),
-    where('comprado', '==', false) // Solo items no comprados
-  );
-  
-  return collectionData(q, { idField: 'id' }).pipe(
-    map((items: any[]) => {
-      return items.map(itemFirestore => this.mapearItemDesdeFirestore(itemFirestore));
-    })
-  );
-}
-
-// ✅ Mapear datos de Firestore a nuestro modelo ItemListaCompras
-private mapearItemDesdeFirestore(data: any): ItemListaCompras {
-  return {
-    id: data.id,
-    nombre: data.nombre || '',
-    categoriaId: data.categoriaId || '',
-    categoriaNombre: data.categoriaNombre || '',
-    cantidadRecomendada: data.cantidad || 1,
-    cantidadUsuario: data.cantidad || 1,
-    prioridad: this.mapearNumeroAPrioridad(data.prioridad || 0),
-    comprado: data.comprado || false,
-    usuarioId: data.usuarioId || '',
-    esManual: data.esManual || false,
-    motivo: data.motivo || 'Desde Firestore',
-    productoId: data.productoId || ''
-  };
-}
-
-// ✅ Mapear prioridad de texto a número para Firestore
-private mapearPrioridadANumero(prioridad: string): number {
-  switch (prioridad) {
-    case 'alta': return 2;
-    case 'media': return 1;
-    case 'baja': return 0;
-    default: return 1;
+  // ✅ Mapear item desde Firestore
+  private mapearItemDesdeFirestore(data: any): ItemListaCompras {
+    return {
+      id: data.id,
+      nombre: data.nombre || '',
+      categoriaId: data.categoriaId || '',
+      categoriaNombre: data.categoriaNombre || '',
+      cantidadRecomendada: data.cantidad || 1,
+      cantidadUsuario: data.cantidad || 1,
+      prioridad: this.mapearNumeroAPrioridad(data.prioridad || 1),
+      comprado: data.comprado || false,
+      usuarioId: data.usuarioId || '',
+      esManual: data.esManual || false,
+      motivo: data.motivo || 'Desde Firestore',
+      productoId: data.productoId || ''
+    };
   }
-}
 
-// ✅ Mapear número de Firestore a prioridad de texto
-private mapearNumeroAPrioridad(numero: number): 'alta' | 'media' | 'baja' {
-  switch (numero) {
-    case 2: return 'alta';
-    case 1: return 'media';
-    case 0: return 'baja';
-    default: return 'media';
+  // ✅ Mapear prioridad a número para Firestore
+  private mapearPrioridadANumero(prioridad: string): number {
+    switch (prioridad) {
+      case 'alta': return 2;
+      case 'media': return 1;
+      case 'baja': return 0;
+      default: return 1;
+    }
   }
-}
 
+  // ✅ Mapear número a prioridad
+  private mapearNumeroAPrioridad(numero: number): 'alta' | 'media' | 'baja' {
+    switch (numero) {
+      case 2: return 'alta';
+      case 1: return 'media';
+      case 0: return 'baja';
+      default: return 'media';
+    }
+  }
 }

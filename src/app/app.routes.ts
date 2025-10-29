@@ -40,8 +40,8 @@ export const routes: Routes = [
   },
   {
   path: 'lista-compras',
-  loadComponent: () => import('./pages/lista-compras/lista-compras.page').then( m => m.ListaComprasPage)
-  },
+  loadComponent: () => import('./pages/lista-compras/lista-compras.page').then(m => m.ListaComprasPage)
+},
 
 
 

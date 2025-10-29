@@ -16,6 +16,9 @@ import {
   cashOutline,
   createOutline,
   trashOutline,
+  refreshOutline,
+  cart,
+  checkmarkOutline,
   add
 } from 'ionicons/icons';
 
@@ -44,7 +47,11 @@ export class AppComponent {
       'cash-outline': cashOutline,
       'create-outline': createOutline,
       'trash-outline': trashOutline,
+      'refresh': refreshOutline,
+      'cart': cart,
+      'checkmark': checkmarkOutline,
       'add': add
+      
     });
   }
 }

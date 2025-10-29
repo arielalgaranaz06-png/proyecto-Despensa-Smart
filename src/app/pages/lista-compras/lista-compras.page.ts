@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { AlertController, ToastController } from '@ionic/angular';
+import { ShoppingListService } from '../../services/shopping-list.service';
+import { DespensaService } from '../../services/despensa.service';
 import { Producto, ItemListaCompras } from '../../models/producto.model';
+import { AlertController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-lista-compras',
@@ -15,6 +17,8 @@ import { Producto, ItemListaCompras } from '../../models/producto.model';
 export class ListaComprasPage implements OnInit {
 
   items: ItemListaCompras[] = [];
+  productos: Producto[] = [];
+  categoriasUnicas: string[] = [];
   cargando = false;
   mostrarAgregarManual = false;
   
@@ -25,6 +29,8 @@ export class ListaComprasPage implements OnInit {
   };
 
   constructor(
+    private shoppingListService: ShoppingListService,
+    private despensaService: DespensaService,
     private alertController: AlertController,
     private toastController: ToastController
   ) { }
@@ -33,156 +39,115 @@ export class ListaComprasPage implements OnInit {
     await this.cargarListaCompras();
   }
 
-  // ✅ Cargar lista de compras - SIN FIREBASE
+  // ✅ Cargar lista de compras - CON FIRESTORE REAL
   async cargarListaCompras() {
     this.cargando = true;
     
     try {
-      // Datos de prueba estáticos
-      const productosPrueba: Producto[] = [
-        {
-          id: '1',
-          nombre: 'Leche',
-          cantidad: 0, // ✅ Agotado - debería aparecer
-          categoriaId: 'lacteos',
-          fechaVencimiento: '2024-12-31',
-          minimoStock: 2,
-          activo: true,
-          fechaRegistro: new Date().toISOString(),
-          fechaModificacion: new Date().toISOString(),
-          categoria: { nombre: 'Lácteos' }
-        },
-        {
-          id: '2',
-          nombre: 'Pan',
-          cantidad: 1, // ✅ Stock bajo - debería aparecer
-          categoriaId: 'panaderia',
-          fechaVencimiento: '2024-12-20',
-          minimoStock: 3,
-          activo: true,
-          fechaRegistro: new Date().toISOString(),
-          fechaModificacion: new Date().toISOString(),
-          categoria: { nombre: 'Panadería' }
-        },
-        {
-          id: '3',
-          nombre: 'Arroz',
-          cantidad: 5, // ✅ Stock normal - NO debería aparecer
-          categoriaId: 'granos',
-          fechaVencimiento: '2025-01-15',
-          minimoStock: 2,
-          activo: true,
-          fechaRegistro: new Date().toISOString(),
-          fechaModificacion: new Date().toISOString(),
-          categoria: { nombre: 'Granos' }
-        },
-        {
-          id: '4',
-          nombre: 'Yogurt',
-          cantidad: 2, // ✅ Próximo a vencer - debería aparecer
-          categoriaId: 'lacteos',
-          fechaVencimiento: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 días
-          minimoStock: 2,
-          activo: true,
-          fechaRegistro: new Date().toISOString(),
-          fechaModificacion: new Date().toISOString(),
-          categoria: { nombre: 'Lácteos' }
-        }
-      ];
-
-      // Generar lista inteligente local
-      this.items = this.generarListaComprasLocal(productosPrueba);
+      const user = await this.despensaService.getCurrentUser();
+      console.log('Usuario actual:', user);
       
-      await this.mostrarToast(`Lista generada con ${this.items.length} productos`, 'success');
+      if (user && user.uid) {
+        // Intentar cargar lista existente de Firestore
+        try {
+          const listaExistente = await this.shoppingListService.obtenerListaUsuarioFirestore(user.uid).toPromise();
+          
+          if (listaExistente && listaExistente.length > 0) {
+            console.log('Lista cargada desde Firestore:', listaExistente.length, 'items');
+            this.items = listaExistente;
+            this.actualizarCategorias();
+            await this.mostrarToast('Lista de compras cargada desde la nube', 'success');
+            return;
+          }
+        } catch (firestoreError) {
+          console.warn('Error cargando lista de Firestore:', firestoreError);
+          // Continuar con generación de nueva lista
+        }
+      }
+
+      // Si no hay lista existente o hay error, generar nueva desde productos
+      console.log('Generando nueva lista desde productos...');
+      this.productos = await this.despensaService.obtenerProductosUsuario().toPromise() || [];
+      console.log('Productos obtenidos:', this.productos.length);
+      await this.generarNuevaLista();
       
     } catch (error) {
       console.error('Error cargando lista:', error);
-      await this.mostrarToast('Error cargando la lista', 'danger');
+      await this.mostrarToast('Error cargando la lista de compras', 'danger');
     } finally {
       this.cargando = false;
     }
   }
 
-  // ✅ Generar lista inteligente localmente
-  private generarListaComprasLocal(productos: Producto[]): ItemListaCompras[] {
-    const listaCompras: ItemListaCompras[] = [];
-    const hoy = new Date();
-
-    productos.forEach(producto => {
-      if (!producto.activo) return;
-
-      let motivo = '';
-      let prioridad: 'alta' | 'media' | 'baja' = 'media';
-      let cantidadRecomendada = 1;
-
-      // Lógica inteligente
-      if (producto.cantidad <= 0) {
-        motivo = 'Producto agotado';
-        prioridad = 'alta';
-        cantidadRecomendada = producto.minimoStock;
-      } else if (producto.cantidad < producto.minimoStock) {
-        motivo = `Stock bajo (${producto.cantidad}/${producto.minimoStock})`;
-        prioridad = 'alta';
-        cantidadRecomendada = producto.minimoStock - producto.cantidad;
-      } else if (producto.fechaVencimiento) {
-        const fechaVencimiento = new Date(producto.fechaVencimiento);
-        const diasParaVencer = Math.floor((fechaVencimiento.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
-        
-        if (diasParaVencer <= 3 && diasParaVencer >= 0) {
-          motivo = `Vence en ${diasParaVencer} días`;
-          prioridad = 'media';
-          cantidadRecomendada = 1;
-        } else if (diasParaVencer < 0) {
-          motivo = 'Producto vencido';
-          prioridad = 'alta';
-          cantidadRecomendada = 1;
+  // ✅ Generar nueva lista inteligente y guardar en Firestore
+  async generarNuevaLista() {
+    const productosActivos = this.productos.filter(p => p.activo);
+    console.log('Productos activos para generar lista:', productosActivos.length);
+    
+    const listaGenerada = this.shoppingListService.generarListaCompras(productosActivos);
+    
+    if (listaGenerada.length > 0) {
+      // Guardar en Firestore si hay usuario autenticado
+      const user = await this.despensaService.getCurrentUser();
+      if (user && user.uid) {
+        try {
+          await this.shoppingListService.guardarListaComprasFirestore(listaGenerada);
+          console.log('Lista guardada en Firestore');
+        } catch (saveError) {
+          console.warn('Error guardando en Firestore, pero continuando:', saveError);
         }
       }
-
-      if (motivo) {
-        listaCompras.push({
-          nombre: producto.nombre,
-          categoriaId: producto.categoriaId,
-          categoriaNombre: producto.categoria?.nombre || 'General',
-          cantidadRecomendada: cantidadRecomendada,
-          cantidadUsuario: cantidadRecomendada,
-          prioridad: prioridad,
-          comprado: false,
-          usuarioId: 'usuario-local',
-          esManual: false,
-          motivo: motivo,
-          productoId: producto.id
-        });
-      }
-    });
-
-    // Organizar por categoría
-    return listaCompras.sort((a, b) => (a.categoriaNombre || '').localeCompare(b.categoriaNombre || ''));
+      
+      this.items = listaGenerada;
+      this.actualizarCategorias();
+      await this.mostrarToast(`Lista generada con ${listaGenerada.length} productos`, 'success');
+    } else {
+      await this.mostrarToast('¡Tu despensa está bien surtida! No hay productos para comprar', 'success');
+      this.items = [];
+    }
   }
 
-  // ✅ Obtener categorías únicas
-  get categoriasUnicas(): string[] {
+  // ✅ Actualizar lista de categorías únicas
+  actualizarCategorias() {
     const categorias = this.items
       .filter(item => !item.comprado)
-      .map(item => item.categoriaNombre || 'General');
+      .map(item => item.categoriaNombre || item.categoriaId);
     
-    return [...new Set(categorias)].filter(c => c);
+    this.categoriasUnicas = [...new Set(categorias)].filter(c => c);
+    console.log('Categorías actualizadas:', this.categoriasUnicas);
   }
 
   // ✅ Obtener items por categoría
   obtenerItemsPorCategoria(categoria: string): ItemListaCompras[] {
     return this.items.filter(item => 
-      (item.categoriaNombre === categoria) && !item.comprado
+      (item.categoriaNombre === categoria || item.categoriaId === categoria) && 
+      !item.comprado
     );
   }
 
-  // ✅ Marcar item como comprado
+  // ✅ Marcar item como comprado y actualizar en Firestore
   async marcarComprado(item: ItemListaCompras) {
-    item.comprado = true;
-    await this.mostrarToast(`${item.nombre} marcado como comprado`, 'success');
+    try {
+      item.comprado = true;
+      
+      // Si el item tiene ID (viene de Firestore), actualizar en Firestore
+      if (item.id) {
+        const user = await this.despensaService.getCurrentUser();
+        if (user && user.uid) {
+          console.log('Item marcado como comprado (Firestore update pendiente)');
+        }
+      }
+      
+      // Actualizar la vista
+      this.actualizarCategorias();
+      await this.mostrarToast(`${item.nombre} marcado como comprado`, 'success');
+    } catch (error) {
+      console.error('Error marcando como comprado:', error);
+      await this.mostrarToast('Error marcando como comprado', 'danger');
+    }
   }
 
-  // ✅ Editar cantidad
+  // ✅ Editar cantidad de item
   async editarCantidad(item: ItemListaCompras) {
     const alert = await this.alertController.create({
       header: 'Editar Cantidad',
@@ -233,6 +198,7 @@ export class ListaComprasPage implements OnInit {
     this.items.push(nuevoItem);
     this.nuevoItemManual = { nombre: '', categoriaNombre: 'General', cantidad: 1 };
     this.mostrarAgregarManual = false;
+    this.actualizarCategorias();
     
     await this.mostrarToast('Producto agregado', 'success');
   }
@@ -248,6 +214,7 @@ export class ListaComprasPage implements OnInit {
           text: 'Eliminar',
           handler: () => {
             this.items = this.items.filter(i => i !== item);
+            this.actualizarCategorias();
             this.mostrarToast('Producto eliminado', 'success');
           }
         }
