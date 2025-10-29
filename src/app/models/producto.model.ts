@@ -8,10 +8,8 @@ export interface Producto {
   activo: boolean;
   fechaRegistro: string;
   fechaModificacion: string;
-  
-  // Campos que podrían venir de Firestore con nombres diferentes
   categoria?: any;
   tipo?: string;
   precio?: number;
-  fecholvercimiento?: string; // Posible error de escritura en la base de datos
+  fecholvercimiento?: string; 
 }

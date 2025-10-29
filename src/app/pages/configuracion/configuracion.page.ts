@@ -14,8 +14,7 @@ import { ProfileService, UserProfile } from '../../services/profile.service';
 import { addIcons } from 'ionicons';
 import { 
   personCircleOutline, notificationsOutline, shieldCheckmarkOutline,
-  pencilOutline, mailOutline, cameraOutline, informationCircleOutline,
-  keyOutline, logOutOutline, powerOutline, chevronForwardOutline
+  pencilOutline, mailOutline, keyOutline, powerOutline, chevronForwardOutline
 } from 'ionicons/icons';
 
 @Component({
@@ -31,16 +30,16 @@ import {
   ]
 })
 export class ConfiguracionPage implements OnInit {
-  // Notificaciones
+  // Variables para configuración de notificaciones
   notificationsEnabled: boolean = false;
   lowStockAlerts: boolean = true;
   expiryAlerts: boolean = true;
   recipeSuggestions: boolean = true;
   
-  // Perfil
+  // Variables para perfil de usuario
   userProfile: UserProfile | null = null;
   
-  // Alertas
+  // Variables para control de alertas
   showToast: boolean = false;
   toastMessage: string = '';
   showPasswordAlert: boolean = false;
@@ -48,7 +47,7 @@ export class ConfiguracionPage implements OnInit {
   showNameAlert: boolean = false;
   showReauthAlert: boolean = false;
   
-  // Formularios
+  // Variables para formularios
   newPassword: string = '';
   confirmPassword: string = '';
   newEmail: string = '';
@@ -56,7 +55,7 @@ export class ConfiguracionPage implements OnInit {
   reauthPassword: string = '';
   currentOperation: 'password' | 'email' = 'password';
 
-  // Botones de alertas
+  // Configuración de botones para alertas
   alertButtonsName = [
     { text: 'Cancelar', role: 'cancel' },
     { text: 'Guardar', role: 'confirm' }
@@ -83,27 +82,31 @@ export class ConfiguracionPage implements OnInit {
     private authService: AuthRestService,
     private profileService: ProfileService
   ) { 
-addIcons({
-  personCircleOutline,
-  pencilOutline,
-  chevronForwardOutline,
-  mailOutline,
-  cameraOutline,
-  informationCircleOutline,
-  notificationsOutline,
-  shieldCheckmarkOutline,
-  keyOutline,
-  logOutOutline,
-  powerOutline
-});
-}
+    // Registrar iconos utilizados en la interfaz
+    addIcons({
+      personCircleOutline,
+      pencilOutline,
+      chevronForwardOutline,
+      mailOutline,
+      notificationsOutline,
+      shieldCheckmarkOutline,
+      keyOutline,
+      powerOutline
+    });
+  }
+
+  // Inicialización del componente
   async ngOnInit() {
     await this.loadSettings();
     this.loadUserProfile();
   }
+
+  // Navegación al menú principal
   gotoMenuPrincipal() {
     this.router.navigate(['/menu-principal']); 
   }
+
+  // Cargar configuración de notificaciones desde localStorage
   async loadSettings() {
     const settings = localStorage.getItem('notificationSettings');
     if (settings) {
@@ -114,6 +117,7 @@ addIcons({
       this.recipeSuggestions = parsed.recipeSuggestions ?? true;
     }
 
+    // Verificar permisos de notificaciones si están habilitadas
     if (this.notificationsEnabled) {
       const hasPermission = await this.notificationsService.checkPermissions();
       if (!hasPermission) {
@@ -123,6 +127,7 @@ addIcons({
     }
   }
 
+  // Cargar perfil de usuario
   loadUserProfile() {
     this.userProfile = this.profileService.getUserProfile();
     if (!this.userProfile) {
@@ -134,7 +139,9 @@ addIcons({
     }
   }
 
-  // NOTIFICACIONES
+  // MÉTODOS DE NOTIFICACIONES
+
+  // Activar/desactivar notificaciones
   async toggleNotifications() {
     if (this.notificationsEnabled) {
       const granted = await this.notificationsService.requestPermissions();
@@ -152,6 +159,7 @@ addIcons({
     this.saveNotificationSettings();
   }
 
+  // Guardar configuración de notificaciones
   saveNotificationSettings() {
     const settings = {
       notificationsEnabled: this.notificationsEnabled,
@@ -162,6 +170,7 @@ addIcons({
     localStorage.setItem('notificationSettings', JSON.stringify(settings));
   }
 
+  // Probar notificaciones
   async testNotifications() {
     if (!this.notificationsEnabled) return;
 
@@ -179,12 +188,15 @@ addIcons({
     }
   }
 
-  // PERFIL - EDITAR NOMBRE
+  // MÉTODOS DE PERFIL - EDITAR NOMBRE
+
+  // Abrir alerta para editar nombre
   openEditName() {
     this.newName = this.userProfile?.displayName || '';
     this.showNameAlert = true;
   }
 
+  // Manejar cierre de alerta de nombre
   onNameAlertDismiss(event: any) {
     this.showNameAlert = false;
     if (event.detail.role === 'confirm' && event.detail.data) {
@@ -193,6 +205,7 @@ addIcons({
     }
   }
 
+  // Actualizar nombre de usuario
   async updateDisplayName() {
     if (!this.newName.trim()) {
       this.showMessage('El nombre no puede estar vacío');
@@ -208,12 +221,15 @@ addIcons({
     }
   }
 
-  // PERFIL - EDITAR EMAIL
+  // MÉTODOS DE PERFIL - EDITAR EMAIL
+
+  // Abrir flujo para editar email (comienza con reautenticación)
   openEditEmail() {
     this.currentOperation = 'email';
     this.showReauthAlert = true;
   }
 
+  // Manejar cierre de alerta de reautenticación
   onReauthAlertDismiss(event: any) {
     this.showReauthAlert = false;
     if (event.detail.role === 'confirm' && event.detail.data) {
@@ -222,6 +238,7 @@ addIcons({
     }
   }
 
+  // Procesar reautenticación
   async handleReauthentication() {
     try {
       const success = await this.reauthenticateUser();
@@ -240,6 +257,7 @@ addIcons({
     }
   }
 
+  // Manejar cierre de alerta de email
   onEmailAlertDismiss(event: any) {
     this.showEmailAlert = false;
     if (event.detail.role === 'confirm' && event.detail.data) {
@@ -248,6 +266,7 @@ addIcons({
     }
   }
 
+  // Actualizar email del usuario
   async updateEmail() {
     if (!this.newEmail.trim() || !this.validateEmail(this.newEmail)) {
       this.showMessage('Ingresa un email válido');
@@ -264,32 +283,15 @@ addIcons({
     }
   }
 
-  // PERFIL - FOTO DE PERFIL (simulada)
-  updateProfilePhoto() {
-    const fakePhotoURL = 'https://via.placeholder.com/150/27AE60/FFFFFF?text=Usuario';
-    this.profileService.updatePhotoURL(fakePhotoURL);
-    this.loadUserProfile();
-    this.showMessage('Foto de perfil actualizada');
-  }
+  // MÉTODOS DE SEGURIDAD - CAMBIAR CONTRASEÑA
 
-  // PERFIL - INFORMACIÓN DE CUENTA
-  showAccountInfo() {
-    const user = this.authService.getCurrentUser();
-    const info = `
-Email: ${this.userProfile?.email}
-Nombre: ${this.userProfile?.displayName}
-Cuenta creada: ${this.userProfile?.createdAt ? new Date(this.userProfile.createdAt).toLocaleDateString() : 'N/A'}
-Último acceso: ${this.userProfile?.lastLogin ? new Date(this.userProfile.lastLogin).toLocaleDateString() : 'N/A'}
-    `;
-    this.showMessage(info);
-  }
-
-  // SEGURIDAD - CAMBIAR CONTRASEÑA
+  // Abrir flujo para cambiar contraseña (comienza con reautenticación)
   openChangePassword() {
     this.currentOperation = 'password';
     this.showReauthAlert = true;
   }
 
+  // Manejar cierre de alerta de contraseña
   onPasswordAlertDismiss(event: any) {
     this.showPasswordAlert = false;
     if (event.detail.role === 'confirm' && event.detail.data) {
@@ -299,6 +301,7 @@ Cuenta creada: ${this.userProfile?.createdAt ? new Date(this.userProfile.created
     }
   }
 
+  // Cambiar contraseña del usuario
   async changePassword() {
     if (!this.newPassword || this.newPassword.length < 6) {
       this.showMessage('La contraseña debe tener al menos 6 caracteres');
@@ -318,7 +321,9 @@ Cuenta creada: ${this.userProfile?.createdAt ? new Date(this.userProfile.created
     }
   }
 
-  // REAUTENTICACIÓN
+  // MÉTODOS DE REAUTENTICACIÓN
+
+  // Reautenticar usuario para operaciones sensibles
   async reauthenticateUser(): Promise<boolean> {
     const user = this.authService.getCurrentUser();
     if (!user || !user.email) {
@@ -336,12 +341,9 @@ Cuenta creada: ${this.userProfile?.createdAt ? new Date(this.userProfile.created
     }
   }
 
-  // SEGURIDAD - CERRAR SESIÓN EN TODOS LOS DISPOSITIVOS (simulado)
-  logoutAllDevices() {
-    this.showMessage('Se ha cerrado sesión en todos los dispositivos');
-  }
+  // MÉTODOS DE SEGURIDAD - CERRAR SESIÓN
 
-  // SEGURIDAD - CERRAR SESIÓN
+  // Cerrar sesión del usuario
   async logout() {
     try {
       await this.authService.logout();
@@ -353,11 +355,16 @@ Cuenta creada: ${this.userProfile?.createdAt ? new Date(this.userProfile.created
   }
 
   // VALIDACIÓN DE EMAIL
+
+  // Validar formato de email
   private validateEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
 
+  // MOSTRAR MENSAJES
+
+  // Mostrar mensaje toast
   showMessage(message: string) {
     this.toastMessage = message;
     this.showToast = true;

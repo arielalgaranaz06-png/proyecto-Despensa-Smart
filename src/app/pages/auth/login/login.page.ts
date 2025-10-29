@@ -19,6 +19,7 @@ import { AuthRestService } from '../../../services/auth-rest.service';
   ]
 })
 export class LoginPage {
+  // Variables para el formulario de login
   username: string = '';
   password: string = '';
   errorMessage: string = '';
@@ -30,27 +31,37 @@ export class LoginPage {
     private authService: AuthRestService
   ) {}
 
+  /**
+   * Método principal para realizar el login
+   * Valida credenciales y autentica al usuario
+   */
   async login() {
+    // Validar que los campos no estén vacíos
     if (!this.username.trim() || !this.password.trim()) {
       this.showError('Usuario y contraseña son obligatorios');
       return;
     }
 
+    // Iniciar estado de carga
     this.isLoading = true;
     this.errorMessage = '';
 
     try {
+      // Intentar autenticación con el servicio
       console.log('Intentando login con:', this.username);
       const userCredential = await this.authService.loginWithEmail(this.username, this.password);
       console.log('Login exitoso:', userCredential.user.email);
       
+      // Mostrar mensaje de éxito
       this.showSuccess('¡Bienvenido!');
       
+      // Navegar al menú principal después de un breve delay
       setTimeout(() => {
         this.router.navigate(['/menu-principal']);
       }, 1000);
       
     } catch (error: any) {
+      // Manejar diferentes tipos de errores de autenticación
       console.error('Error completo en login:', error);
       
       switch (error.code) {
@@ -73,25 +84,41 @@ export class LoginPage {
           this.showError('Error al iniciar sesión: ' + (error.message || 'Error desconocido'));
       }
     } finally {
+      // Finalizar estado de carga independientemente del resultado
       this.isLoading = false;
     }
   }
 
+  /**
+   * Mostrar mensaje de error
+   * @param message Mensaje de error a mostrar
+   */
   private showError(message: string) {
     this.errorMessage = message;
     this.showToast = true;
   }
 
+  /**
+   * Mostrar mensaje de éxito
+   * @param message Mensaje de éxito a mostrar
+   */
   private showSuccess(message: string) {
     this.errorMessage = message;
     this.showToast = true;
   }
 
+  /**
+   * Manejar el cierre del toast
+   * Limpia el mensaje y oculta el toast
+   */
   onToastDismiss() {
     this.showToast = false;
     this.errorMessage = '';
   }
 
+  /**
+   * Navegar a la página de registro
+   */
   goToRegister() {
     this.router.navigate(['/register']);
   }
